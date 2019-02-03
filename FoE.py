@@ -11,12 +11,12 @@ from grabscreen import grab_screen
 
 #region logging
 logger = logging.getLogger('FoE')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
 
 stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
+stream_handler.setLevel(logging.DEBUG)
 stream_handler.setFormatter(formatter)
 
 logger.addHandler(stream_handler)
@@ -132,7 +132,7 @@ class FoE_Bot:
                     
                     if np.array_equal(tab, img_friends_tab):
                         check_tavern = True
-                    else:
+                    else: 
                         check_tavern = False
         
                     self.moveTo(tab, relative=True, threshold=0.75)
@@ -150,6 +150,9 @@ class FoE_Bot:
             print('Page: {}'.format(page))
             page += 1
             small_screen = grab_screen(self.small_screen_coord)
+            # cv2.imshow('test', small_screen)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
             # press help buttons
             self.pressButtons(small_screen, img_help, 'help')
