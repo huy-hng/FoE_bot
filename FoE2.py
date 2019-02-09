@@ -1,6 +1,5 @@
 import time
 import logging
-import random
 import os
 # from collections import OrderedDict
 
@@ -9,26 +8,15 @@ import numpy as np
 import win32api, win32con
 
 import __init__
-from huys_code.python.templates.decorators import timer
-from huys_code.python.templates.huys_logging import Logging
+from huys_code.python.templates.huys_logging_simple import Logging
+import huys_code.python.templates.cv2_tools as cv2_tools
 
 from grabscreen import grab_screen
 from vk_codes import VK_CODE
 
 
+logging = Logging('FoE', 'debug', filter_str='', create_file=False)
 
-#region logging
-logger = logging.getLogger('FoE')
-logger.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
-
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.DEBUG)
-stream_handler.setFormatter(formatter)
-
-logger.addHandler(stream_handler)
-#endregion logging
 
 #region images
 img_last = cv2.imread('img/last.png')
@@ -66,7 +54,7 @@ def move_click(coord):
 def click_img(roi, img, threshold=0.8, wait=0):
     time.sleep(wait)
     screen = grab_screen(roi)
-    prob, loc = get_template_loc(screen, img)
+    prob, loc = cv2_tools.get_template_loc(screen, img)
 
     height, width, _ = img.shape
     if not roi:
@@ -114,18 +102,28 @@ def key_pressed(key):
     return win32api.GetAsyncKeyState(VK_CODE[key])
 
 
-# @timer
-def get_template_loc(screen, template):
-    """ 
-    input: screen, the big img
-    input2: template, the smaller img
+# # @timer
+# def get_template_loc(screen, template):
+#     """ 
+#     input: screen, the big img
+#     input2: template, the smaller img
         
-    output: prob, loc 
-    """
-    result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
-    _, prob, _, loc  = cv2.minMaxLoc(result)
+#     output: prob, loc 
+#     """
+#     logger = logging.get_logger('cv2_tools.get_template_loc')
 
-    return prob, loc
+#     result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+#     _, prob, _, loc  = cv2.minMaxLoc(result)
+
+#     logger.debug(f'normal prob: {prob}')
+
+
+
+#     result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+#     _, prob, _, loc  = cv2.minMaxLoc(result)
+    
+
+#     return prob, loc
 
 
 def pause():
@@ -200,7 +198,7 @@ def is_foe_opened():
     print('Press Esc to pause.')
 
     while True:
-        prob, _ = get_template_loc(grab_screen(), img_guild)
+        prob, _ = cv2_tools.get_template_loc(grab_screen(), img_guild)
         time.sleep(0.1)
         if prob > 0.95:
             if key_pressed('spacebar'):
@@ -215,12 +213,12 @@ def set_window_coords():
 
     click_img([], img_up_arrow)
 
-    _, loc_guild = get_template_loc(screen, img_guild)
-    _, loc_prev = get_template_loc(screen, img_previous)
-    _, loc_next = get_template_loc(screen, img_next)
+    _, loc_guild = cv2_tools.get_template_loc(screen, img_guild)
+    _, loc_prev = cv2_tools.get_template_loc(screen, img_previous)
+    _, loc_next = cv2_tools.get_template_loc(screen, img_next)
 
-    # _, loc_bot_left = get_template_loc(screen, img_bot_left)
-    # _, loc_top_right = get_template_loc(screen, img_top_right)
+    # _, loc_bot_left = cv2_tools.get_template_loc(screen, img_bot_left)
+    # _, loc_top_right = cv2_tools.get_template_loc(screen, img_top_right)
 
     # window_coords = [
     #     loc_bot_left[0] - 20,
@@ -293,7 +291,7 @@ def click_all_pages(roi_coords, img_to_click, amount_pressed):
         time.sleep(0.5)
         screen_next = grab_screen(roi_coords)
 
-        prob_last_page, _ = get_template_loc(screen_next, screen)
+        prob_last_page, _ = cv2_tools.get_template_loc(screen_next, screen)
 
         print(f'prob_last_page {prob_last_page}')
 
@@ -311,7 +309,7 @@ def main():
     help_all_selected(roi_coords, ppl_tp_help)
 
 
-main()
+# main()
 
 def show_img(name, img):
     cv2.imshow(name, cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -339,8 +337,8 @@ def test():
             screen = grab_screen(roi_coords)
             
             normal_sum = np.sum(screen)
-            prob_help, loc_help = get_template_loc(screen, img_help)
-            prob_tav, loc_tav = get_template_loc(screen, img_tavern)
+            prob_help, loc_help = cv2_tools.get_template_loc(screen, img_help)
+            prob_tav, loc_tav = cv2_tools.get_template_loc(screen, img_tavern)
 
 
             print(f'prob_help = {prob_help:4f}')
@@ -360,4 +358,4 @@ def test():
 
 # import sys
 # print(sys.executable)
-# test()
+test()
