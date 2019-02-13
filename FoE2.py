@@ -44,10 +44,11 @@ img_bot_left = cv2.imread('img/bot_left.png')
 #region helpers
 
 #region mouse
-def move_click(coord):
+def move_click(coord, click=True):
     win32api.SetCursorPos(coord)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+    if click:
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
 
