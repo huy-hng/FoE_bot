@@ -1,9 +1,87 @@
 import time
+import os
+import pickle
 
+import consolemenu as cm
+import consolemenu.items as cm_items
 import pyautogui
 import win32api, win32con
 
-from vk_codes import VK_CODE, VK_CODE_alphanumerical
+from vk_codes import VK_CODE, BINDABLE_keys
+
+
+
+class Macros:
+    def __init__(self):
+
+        if os.path.isfile('data/macros.data'):
+            with open('data/macros.data', 'rb') as f:
+                self.presets = pickle.load(f)
+        else:
+            self.presets = {}
+
+        self.preset_menu()
+
+    def test(self):
+        print('asd')
+
+    def preset_menu(self):
+        menu = cm.ConsoleMenu('Macros', 'Set mouse positions as macros.')
+
+        if self.presets:
+            for key in self.presets:
+                preset = cm_items.FunctionItem(key, input, self.presets[key])
+                menu.append_item(preset)
+        else:
+            # presets = cm_items.MenuItem('No presets yet. Create a blank one below.')
+            no_preset = cm_items.FunctionItem('No presets yet. Create a blank one below.', lambda: print('asd'))
+            menu.append_item(no_preset)
+
+
+        # submenu_item = cm_items.SubmenuItem('Submenu item', selection_menu, menu)
+
+
+
+        menu.show()
+
+
+
+    def main(self):
+        coords = init_coords()
+        for key, val in coords.items():
+            if val is not None:
+                print(f'{key}: {val[0]}, {val[1]}')
+
+
+        while True:
+
+            for k, _ in coords.items():
+                if key_pressed(f'{k}'):
+                    x, y = pyautogui.position()
+                    current_coord = [x, y]
+                    set_coord = coords[f'{k}']
+                    
+                    if set_coord is not None:
+                        move_click(set_coord)
+                        move_click(current_coord, False)
+                        time.sleep(0.1)
+
+                
+
+            if key_pressed('F4'):
+                change_coord(coords)
+
+            if key_pressed('home'):
+                pause()
+
+            time.sleep(0.01)
+
+# Macros()
+
+
+
+
+
 
 def key_pressed(key):
     return win32api.GetAsyncKeyState(VK_CODE[key])
@@ -37,7 +115,7 @@ def change_coord(coords):
 
 def init_coords():
     coords = {}
-    for key in VK_CODE_alphanumerical:
+    for key in BINDABLE_keys:
         if key == '4':
             coords[key] = [913, 142]
         elif key == '5':
@@ -66,7 +144,6 @@ def pause():
             break
 
 def main():
-
     coords = init_coords()
     for key, val in coords.items():
         if val is not None:

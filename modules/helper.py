@@ -40,12 +40,12 @@ img_bot_left = cv2.imread('img/bot_left.png')
 #endregion images
 
 
-
 #region helpers
 
 #region mouse
 def move_click(coord, click=True):
-    win32api.SetCursorPos(coord)
+    if coord is not None:
+        win32api.SetCursorPos(coord)
     if click:
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
@@ -100,31 +100,9 @@ def is_loading(normal_screen):
 
 
 def key_pressed(key):
+    
     return win32api.GetAsyncKeyState(VK_CODE[key])
 
-
-# # @timer
-# def get_template_loc(screen, template):
-#     """ 
-#     input: screen, the big img
-#     input2: template, the smaller img
-        
-#     output: prob, loc 
-#     """
-#     logger = logging.get_logger('cv2_tools.get_template_loc')
-
-#     result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
-#     _, prob, _, loc  = cv2.minMaxLoc(result)
-
-#     logger.debug(f'normal prob: {prob}')
-
-
-
-#     result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
-#     _, prob, _, loc  = cv2.minMaxLoc(result)
-    
-
-#     return prob, loc
 
 
 def pause():
@@ -302,7 +280,7 @@ def click_all_pages(roi_coords, img_to_click, amount_pressed):
 
 #endregion
 
-def main():
+def helper():
     ppl_tp_help = start_menu()
     is_foe_opened()
     roi_coords = set_window_coords()
@@ -310,8 +288,8 @@ def main():
     help_all_selected(roi_coords, ppl_tp_help)
 
 
-# main()
 
+#region testing
 def show_img(name, img):
     cv2.imshow(name, cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
@@ -354,9 +332,4 @@ def test():
             show_img('3', tav_img)
 
             wait_img()
-
-
-
-# import sys
-# print(sys.executable)
-test()
+#endregion testing

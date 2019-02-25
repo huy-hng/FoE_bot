@@ -1,2 +1,3 @@
+cd ..
 FoE.py
 pause

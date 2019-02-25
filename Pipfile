@@ -9,6 +9,8 @@ verify_ssl = true
 numpy = "*"
 opencv-python = "*"
 pywin32 = "*"
+pyautogui = "*"
+console-menu = "*"
 
 [requires]
 python_version = "3.7"
