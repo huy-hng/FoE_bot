@@ -34,7 +34,7 @@ def calc(total, fp_list):
         if fp < 100:
             fp = math.ceil(fp * 1.8)
 
-        elif fp < 1000:
+        elif fp * 1.9 < 1000:
             fp = math.ceil(fp * 1.9 - 10)
         else:
             fp = math.ceil(fp * 1.9 - 20)
