@@ -116,19 +116,19 @@ def change_coord(coords):
 def init_coords():
     coords = {}
     for key in BINDABLE_keys:
-        if key == '4':
+        if key == 'numpad_7':
             coords[key] = [913, 142]
-        elif key == '5':
+        elif key == 'numpad_8':
             coords[key] = [961, 142]
-        elif key == '6':
+        elif key == 'numpad_9':
             coords[key] = [1009, 142]
-        elif key == 'r':
+        elif key == 'numpad_4':
             coords[key] = [60, 660]
-        elif key == 't':
+        elif key == 'numpad_5':
             coords[key] = [160, 660]
-        elif key == 'f':
+        elif key == 'numpad_1':
             coords[key] = [60, 814]
-        elif key == 'g':
+        elif key == 'numpad_2':
             coords[key] = [160, 814]
         else:
             coords[key] = None
