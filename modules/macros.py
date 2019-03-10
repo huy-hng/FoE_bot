@@ -16,9 +16,24 @@ class Preset:
         self.name = name
 
         self.macros = {}
+        for key in BINDABLE_keys:
+            self.macros[key] = None
+
 
     def show_preset_menu(self):
-        pass
+        menu = cm.ConsoleMenu(f'{self.name}')
+
+        macro = cm_items.MenuItem('Create new Macro')
+        delete = cm_items.MenuItem('Delete Preset')
+        back = cm_items.MenuItem('Back to Menu')
+
+        menu.append_item(macro)
+        menu.append_item(delete)
+        menu.append_item(back)
+
+        menu.show()
+
+
 
     def create_new_macro(self):
         winsound.Beep(440, 200)
@@ -30,17 +45,17 @@ class Preset:
             coord = [x, y]
             time.sleep(0.05)
 
-            for k, _ in coords.items():
-                if key_pressed(f'{k}'):
-                    coords[f'{k}'] = coord
+            for k, _ in self.macros.items():
+                if self.key_pressed(f'{k}'):
+                    self.macros[f'{k}'] = coord
 
-                    for key, val in coords.items():
+                    for key, val in self.macros.items():
                         if val is not None:
                             print(f'{key}: {val[0]}, {val[1]}')
 
                     return
 
-                if key_pressed('esc'):
+                if self.key_pressed('esc'):
                     return
 
 
@@ -54,26 +69,28 @@ class Preset:
         while True:
 
             for k, _ in self.macros.items():
-                if key_pressed(f'{k}'):
+                if self.key_pressed(f'{k}'):
                     x, y = pyautogui.position()
                     current_coord = [x, y]
                     set_coord = self.macros[f'{k}']
                     
                     if set_coord is not None:
-                        move_click(set_coord)
-                        move_click(current_coord, False)
+                        self.move_click(set_coord)
+                        self.move_click(current_coord, False)
                         time.sleep(0.1)
 
                 
 
-            if key_pressed('F4'):
+            if self.key_pressed('F4'):
                 change_coord(self.macros)
 
-            if key_pressed('home'):
-                pause()
+            if self.key_pressed('home'):
+                self.pause()
 
             time.sleep(0.01)
 
+
+    #region helpers
     @staticmethod
     def key_pressed(key):
         return win32api.GetAsyncKeyState(VK_CODE[key])
@@ -88,15 +105,14 @@ class Preset:
             
         return coords
 
-    @staticmethod
-    def pause():
+    def pause(self):
         print('Pausing')
         while True:
             time.sleep(0.2)
-            if key_pressed('home'):
+            if self.key_pressed('home'):
                 print('Unpausing')
                 break
-
+    #endregion
 
 
 
