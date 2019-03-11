@@ -1,0 +1,106 @@
+DEBUG: Macros.Menu.load_file: line 247: {'1234': <__main__.Preset object at 0x0000022625A37208>}
+DEBUG: Macros.Menu.change_name: line 212: asdf: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 213: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 214: asdf, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 221: {'asdf': <__main__.Preset object at 0x0000022625A37208>}
+DEBUG: Macros.Menu.write_file: line 236: {'asdf': <__main__.Preset object at 0x0000022625A37208>}
+DEBUG: Macros.Menu.change_name: line 212: qwer: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 213: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 214: qwer, <class 'str'>
+ERROR: Macros.Menu.change_name: line 227: '1234'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 219, in change_name
+    self.presets[new_name] = self.presets[name]
+KeyError: '1234'
+DEBUG: Macros.Menu.load_file: line 247: {'asdf': <__main__.Preset object at 0x000001BA1F5D6208>}
+DEBUG: Macros.Menu.change_name: line 212: : None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 213: Macros asdf, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 214: , <class 'str'>
+DEBUG: Macros.Menu.change_name: line 221: {'': <__main__.Preset object at 0x000001BA1F5D6208>}
+DEBUG: Macros.Menu.write_file: line 236: {'': <__main__.Preset object at 0x000001BA1F5D6208>}
+DEBUG: Macros.Menu.load_file: line 247: {'': <__main__.Preset object at 0x0000024875617128>}
+DEBUG: Macros.Menu.change_name: line 212: 1234: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 213: Macros , <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 214: 1234, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 221: {'1234': <__main__.Preset object at 0x0000024875617128>}
+DEBUG: Macros.Menu.write_file: line 236: {'1234': <__main__.Preset object at 0x0000024875617128>}
+DEBUG: Macros.Menu.change_name: line 212: asdf: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 213: Macros , <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 214: asdf, <class 'str'>
+ERROR: Macros.Menu.change_name: line 227: ''
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 219, in change_name
+    self.presets[new_name] = self.presets[name]
+KeyError: ''
+DEBUG: Macros.Menu.load_file: line 159: {'1234': <__main__.Preset object at 0x00000201629473C8>}
+DEBUG: Macros.Menu.change_name: line 241: qwe: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 242: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 243: qwe, <class 'str'>
+ERROR: Macros.Menu.change_name: line 256: '1234'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 248, in change_name
+    presets[new_name] = presets[name]
+KeyError: '1234'
+DEBUG: Macros.Menu.load_file: line 159: {'1234': <__main__.Preset object at 0x000001C97E817160>}
+DEBUG: Macros.Menu.change_name: line 241: weqr: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 242: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 243: weqr, <class 'str'>
+ERROR: Macros.Menu.change_name: line 256: '1234'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 248, in change_name
+    presets[new_name] = presets[name]
+KeyError: '1234'
+DEBUG: Macros.Menu.load_file: line 162: {'1234': <__main__.Preset object at 0x0000023C58F47390>}
+DEBUG: Macros.Menu.change_name: line 248: qwer: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 249: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 250: qwer, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 257: {'qwer': <__main__.Preset object at 0x0000023C58F47390>}
+ERROR: Macros.Menu.change_name: line 263: 'PresetMenu' object has no attribute 'write_file'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 261, in change_name
+    self.write_file()
+AttributeError: 'PresetMenu' object has no attribute 'write_file'
+DEBUG: Macros.Menu.load_file: line 153: {'1234': <__main__.Preset object at 0x000001C417B07128>}
+DEBUG: Macros.Menu.change_name: line 239: qwer: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 240: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 241: qwer, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 248: {'qwer': <__main__.Preset object at 0x000001C417B07128>}
+ERROR: Macros.Menu.change_name: line 254: 'PresetMenu' object has no attribute 'write_file'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 252, in change_name
+    self.write_file()
+AttributeError: 'PresetMenu' object has no attribute 'write_file'
+DEBUG: Macros.Menu.load_file: line 153: {'1234': <__main__.Preset object at 0x00000209B48980F0>}
+DEBUG: Macros.Menu.change_name: line 239: qwer: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 240: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 241: qwer, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 248: {'qwer': <__main__.Preset object at 0x00000209B48980F0>}
+ERROR: Macros.Menu.change_name: line 254: write_file() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 252, in change_name
+    write_file()
+TypeError: write_file() missing 1 required positional argument: 'self'
+DEBUG: Macros.Menu.load_file: line 153: {'1234': <__main__.Preset object at 0x000002AD0A146240>}
+DEBUG: Macros.Menu.change_name: line 239: wqer: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 240: Macros 1234, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 241: wqer, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 248: {'wqer': <__main__.Preset object at 0x000002AD0A146240>}
+DEBUG: Macros.Menu.load_file: line 153: {'wqer': <__main__.Preset object at 0x0000024F17386358>}
+DEBUG: Macros.Menu.load_file: line 153: {}
+DEBUG: Macros.Menu.load_file: line 163: {}
+DEBUG: Macros.Menu.change_name: line 247: 1234: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 248: Macros asdf, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 249: 1234, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 256: {'1234': <__main__.Preset object at 0x000001A5C9177208>}
+DEBUG: Macros.Menu.load_file: line 163: {'1234': <__main__.Preset object at 0x0000016062D361D0>}
+DEBUG: Macros.Menu.load_file: line 163: {}
+DEBUG: Macros.Menu.load_file: line 163: {}
+DEBUG: Macros.Menu.change_name: line 236: qwe: None. 5 items, <class 'consolemenu.console_menu.ConsoleMenu'>
+DEBUG: Macros.Menu.change_name: line 237: Macros asdf, <class 'consolemenu.items.submenu_item.SubmenuItem'>
+DEBUG: Macros.Menu.change_name: line 238: qwe, <class 'str'>
+DEBUG: Macros.Menu.change_name: line 245: {'qwe': <__main__.Preset object at 0x0000019795E17358>}
+ERROR: Macros.Menu.delete_preset: line 221: 'asdf'
+Traceback (most recent call last):
+  File "c:\Users\Huy\Documents\GitHub\FoE_bot\modules\macros.py", line 214, in delete_preset
+    del presets[name]
+KeyError: 'asdf'
