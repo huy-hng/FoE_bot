@@ -104,7 +104,7 @@ class Preset:
 
 class MainMenu:
 	def __init__(self):
-		self.log_main_menu = Logging('Macros.Menu', level='debug', filter_str='',
+		self.log_main_menu = Logging('Macros.MainMenu', level='debug', filter_str='',
 									 print_=False, create_file=True, time=True)
 
 		self.main_menu = cm.ConsoleMenu('Macros - Main Menu', 'Set mouse positions as macros.')
@@ -114,6 +114,10 @@ class MainMenu:
 		self.load_file()
 
 		self.main_menu.show()
+
+
+		# time.sleep(3)
+		# self.main_menu.resume()
 
 
 	def create_preset(self):
@@ -146,7 +150,7 @@ class MainMenu:
 
 class PresetMenu:
 	def __init__(self, main_menu, name):
-		self.log_preset_menu = Logging('Macros.Menu', level='debug', filter_str='',
+		self.log_preset_menu = Logging('Macros.PresetMenu', level='debug', filter_str='',
 										print_=False, create_file=True, time=True)
 
 		self.main_menu = main_menu
@@ -171,7 +175,7 @@ class PresetMenu:
 		edit_macros =		cm_items.MenuItem('Edit Macros')
 		line =				cm_items.MenuItem('─────────────────────')
 		change_name =		cm_items.FunctionItem('Change Preset Name', self.change_name)
-		delete =			cm_items.FunctionItem('Delete Preset', self.delete_preset)
+		delete =			cm_items.FunctionItem('Delete Preset', self.delete_sub_menus)
 
 
 		self.preset_menu.append_item(self.start_stop)
@@ -211,23 +215,27 @@ class PresetMenu:
 
 
 	#region preset menu functions
+
+	def change_name_menu(self):
+		logger = self.log_preset_menu.get_logger('change_name_menu')
+		menu = cm.ConsoleMenu('Give it a good name', 
+			'Like 420blazeitfaggot or maybe duckmysickUcuckingfunt', show_exit_option=True)
+		menu.show()
+		menu.pause()
+		new_name = menu.get_input()
+		logger.debug(f'new_name: {new_name}')
+
+
 	def change_name(self):
 		global presets
 		logger = self.log_preset_menu.get_logger('change_name')
 
-
 		try:
 			new_name = input('New Name: ')
-			logger.debug(f'new_name: {new_name}')
 
 			# change menu title and main menu name
 			self.preset_menu.title = new_name
 			self.submenu_item.text = new_name
-
-			logger.debug(f'preset_menu {self.preset_menu}, {type(self.preset_menu)}')
-			logger.debug(f'preset_menu.title {self.preset_menu.title}')
-			logger.debug(f'submenu_item {self.submenu_item}, {type(self.submenu_item)}')
-			logger.debug(f'submenu_item.text {self.submenu_item.text}')
 
 			self.main_menu.draw()
 			self.preset_menu.draw()
@@ -242,6 +250,43 @@ class PresetMenu:
 			write_file()
 		except Exception as e:
 			logger.exception(e)
+
+	def delete_sub_menus(self):
+
+		delete_very_sad = lambda: self.choice(':(', [':((', ':((('])
+		delete_ok_sorry = lambda: self.choice('Too late bitch', [':(', ':(('])
+
+		delete_after_menu = lambda: self.choice('Bitch y u press in the first place then', 
+												["Ok sorry, you're right. Delete!", '¯\_(ツ)_/¯'],
+												[delete_ok_sorry, delete_very_sad])
+
+		delete_prompt = lambda: self.choice('Delete?', ['Yes!', 'Wait nO'], 
+											[self.delete_preset, delete_after_menu])
+
+		delete_prompt()
+
+
+	def choice(self, title, text, function=None):
+
+		logger = self.log_preset_menu.get_logger(f'choice: {title}')
+
+		try:
+			menu = cm.ConsoleMenu(f'{title}', show_exit_option=False)
+
+			for i, text in enumerate(text):
+				choice = cm_items.MenuItem(f'{text}', should_exit=True)
+				if function is not None:
+					if function[i] is not None:
+						choice = cm_items.FunctionItem(f'{text}', function[i], should_exit=True)
+
+				menu.append_item(choice)
+
+
+			menu.show()
+			
+		except Exception as e:
+			logger.exception(e)
+
 
 
 	def delete_preset(self):
