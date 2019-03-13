@@ -28,8 +28,6 @@ class Preset:
 	def create_new_macro(self):
 		winsound.Beep(440, 200)
 
-		#TODO: change print statement
-		print('Press a key to set new coordinate.')
 		while True:
 			x, y = pyautogui.position()
 			time.sleep(0.05)
@@ -42,7 +40,6 @@ class Preset:
 
 				if self.key_pressed('esc'):
 					return
-
 
 
 	def main(self):
@@ -68,13 +65,12 @@ class Preset:
 
 
 			if self.key_pressed('F4'):
-				change_coord(self.macros)
+				self.create_new_macro(self.macros)
 
 			if self.key_pressed('home'):
 				self.pause()
 
 			time.sleep(0.01)
-
 
 
 	#region helpers
@@ -129,7 +125,6 @@ class MainMenu:
 		presets[name] = preset
 
 		PresetMenu(self.main_menu, name)
-
 
 
 	def load_file(self):
@@ -251,6 +246,7 @@ class PresetMenu:
 		except Exception as e:
 			logger.exception(e)
 
+
 	def delete_sub_menus(self):
 
 		delete_very_sad = lambda: self.choice(':(', [':((', ':((('])
@@ -286,7 +282,6 @@ class PresetMenu:
 			
 		except Exception as e:
 			logger.exception(e)
-
 
 
 	def delete_preset(self):
