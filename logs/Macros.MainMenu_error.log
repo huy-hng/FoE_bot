@@ -1,1 +1,2 @@
-12.03.19 22:47:50: DEBUG: load_file: line 147: name: 1234
+17.03.19 17:32:19: DEBUG: load_file: line 152: presets: {'asdf': {'numpad_0': None, 'numpad_1': None, 'numpad_2': None, 'numpad_3': None, 'numpad_4': [1520, 460], 'numpad_5': None, 'numpad_6': None, 'numpad_7': None, 'numpad_8': None, 'numpad_9': None, 'multiply_key': None, 'add_key': None, 'separator_key': None, 'subtract_key': None, 'decimal_key': None, 'divide_key': None}}
+17.03.19 17:32:19: DEBUG: load_file: line 156: name: asdf
