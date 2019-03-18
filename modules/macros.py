@@ -1,8 +1,9 @@
+import concurrent.futures
 import os
 import pickle
 import time
 import winsound
-import concurrent.futures
+from concurrent.futures.thread import ThreadPoolExecutor
 
 import consolemenu as cm
 import consolemenu.items as cm_items
@@ -52,8 +53,8 @@ class Preset:
 
 	def start(self):
 
-		self.start = True
-		while self.start:
+		self.run = True
+		while self.run:
 
 			for k, _ in self.macros.items():
 				if self.key_pressed(f'{k}'):
@@ -76,7 +77,7 @@ class Preset:
 			time.sleep(0.01)
 
 	def stop(self):
-		self.start = False
+		self.run = False
 
 
 	#region helpers
@@ -92,7 +93,7 @@ class Preset:
 			win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 			# time.sleep(0.1)
 
-		return coords
+		return coord
 
 	def pause(self):
 		print('Pausing')
@@ -172,60 +173,64 @@ class PresetMenu:
 
 		self.create_preset_menu()
 
-
 	def create_preset_menu(self):
 
 		self.preset_menu = cm.ConsoleMenu(f'Macros - {self.name}')
 		self.submenu_item = cm_items.SubmenuItem(f'{self.name}', self.preset_menu, self.main_menu)
 		self.main_menu.append_item(self.submenu_item)
 
-
-
-		start_stop		= cm_items.FunctionItem('Start'             , self.start_stop            )
+		self.start_stop	= cm_items.FunctionItem('Start'             , self.start_stop            )
 		create_macro	= cm_items.FunctionItem('Create new Macro'  , self.create_macro			 )
 		line			= cm_items.MenuItem    ('─────────────────────'                    )
 		change_name		= cm_items.FunctionItem('Change Preset Name', self.change_name           )
 		delete          = cm_items.FunctionItem('Delete Preset'     , self.submenus_delete_preset)
 
-
-		self.preset_menu.append_item(start_stop)
+		self.preset_menu.append_item(self.start_stop)
 		self.preset_menu.append_item(create_macro)
 		self.preset_menu.append_item(line)
-		self.submenu_macro()
 		self.preset_menu.append_item(line)
 		self.preset_menu.append_item(change_name)
 		self.preset_menu.append_item(delete)
 
+		# add macros
+		for key, coord in self.macros.items():
+			if coord is not None:
+				self.create_macro(key)
 
 	def start_stop(self):
 		logger = self.log_preset_menu.get_logger('start_stop')
 
 		try:
 			if self.toggle_start_stop == 'start':
-				self.preset.start
+				self.preset.start()
 				self.start_stop.text = 'Stop (END)'
-				self.macro.text = 'Create new Macro (F4)'
+				# self.macro.text = 'Create new Macro (F4)'
 				self.toggle_start_stop = 'stop'
 			else:
-				self.preset.stop
+				self.preset.stop()
 				self.start_stop.text = 'Start'
-				self.macro.text = 'Create new Macro'
+				# self.macro.text = 'Create new Macro'
 				self.toggle_start_stop = 'start'
 
 		except Exception as e:
 			logger.exception(e)
 
-	def create_macro(self):
-		key, _ = self.preset.create_new_macro()
-		macro = cm_items.MenuItem(key)
-		self.preset_menu.append_item(macro)
-		self.preset_menu.draw()
 
-	def delete_macro(self, menu):
+	def delete_macro(self, menu, submenu):
 
-		menu.current_option = len(menu.items) - 1
-		menu.select()
-		self.preset_menu.show()
+		logger = self.log_preset_menu.get_logger('delete_macro')
+
+		try:
+			self.preset_menu.remove_item(submenu)
+			self.preset_menu.draw()
+			self.main_menu.draw()
+			menu.current_option = len(menu.items) - 1
+			menu.select()
+			self.preset_menu.show()
+
+			write_file()
+		except Exception as e:
+			logger.exception(e)
 
 
 	#region submenus
@@ -252,28 +257,27 @@ class PresetMenu:
 			logger.exception(e)
 
 
+	def create_macro(self, key=None):
 
+		logger = self.log_preset_menu.get_logger('create_macro')
 
+		try:
+			if key is None:
+				key, _ = self.preset.create_new_macro()
 
-	def submenu_macro(self):
+			macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - {key}')
+			macro_submenu = cm_items.SubmenuItem(f'{key}', macro_menu, self.preset_menu)
 
-		for key, coord in self.macros.items():
-			if coord is not None:
-				macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - {key}')
+			edit_macro = cm_items.FunctionItem('Edit Macro', self.start_stop)
+			delete_macro = cm_items.FunctionItem('Delete Macro', lambda: self.delete_macro(macro_menu, macro_submenu))
 
-				edit_macro = cm_items.FunctionItem('Edit Macro', self.start_stop)
-				delete_macro = cm_items.FunctionItem('Delete Macro', lambda: self.delete_macro(macro_menu))
+			macro_menu.append_item(edit_macro)
+			macro_menu.append_item(delete_macro)
 
-				macro_menu.append_item(edit_macro)
-				macro_menu.append_item(delete_macro)
-
-				macro_submenu = cm_items.SubmenuItem(f'{key}', macro_menu, self.preset_menu)
-				self.preset_menu.append_item(macro_submenu)
-				self.preset_menu.draw()
-
-		
-
-				# print(f'{key}: {coord[0]}, {coord[1]}')
+			self.preset_menu.items.insert(3, macro_submenu)
+			self.preset_menu.draw()
+		except Exception as e:
+			logger.exception(e)
 
 
 	def submenu_change_name(self):
@@ -368,7 +372,6 @@ class PresetMenu:
 
 			del presets[self.name]
 
-
 			self.preset_menu.current_option = len(self.preset_menu.items) - 1
 			self.preset_menu.select()
 			self.main_menu.show()
@@ -389,4 +392,6 @@ def write_file():
 	with open('data/macros.data', 'wb') as f:
 		pickle.dump(presets, f)
 
+
+executor = concurrent.futures.ThreadPoolExecutor()
 MainMenu()
