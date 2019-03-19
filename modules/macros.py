@@ -173,6 +173,7 @@ class PresetMenu:
 
 		self.create_preset_menu()
 
+
 	def create_preset_menu(self):
 
 		self.preset_menu = cm.ConsoleMenu(f'Macros - {self.name}')
@@ -180,7 +181,7 @@ class PresetMenu:
 		self.main_menu.append_item(self.submenu_item)
 
 		self.start_stop	= cm_items.FunctionItem('Start'             , self.start_stop            )
-		create_macro	= cm_items.FunctionItem('Create new Macro'  , self.create_macro			 )
+		create_macro	= cm_items.FunctionItem('Create new Macro'  , self.submenu_macro			 )
 		line			= cm_items.MenuItem    ('─────────────────────'                    )
 		change_name		= cm_items.FunctionItem('Change Preset Name', self.change_name           )
 		delete          = cm_items.FunctionItem('Delete Preset'     , self.submenus_delete_preset)
@@ -195,7 +196,8 @@ class PresetMenu:
 		# add macros
 		for key, coord in self.macros.items():
 			if coord is not None:
-				self.create_macro(key)
+				self.submenu_macro(key)
+
 
 	def start_stop(self):
 		logger = self.log_preset_menu.get_logger('start_stop')
@@ -216,6 +218,7 @@ class PresetMenu:
 			logger.exception(e)
 
 
+    #region menu functions
 	def delete_macro(self, menu, submenu):
 
 		logger = self.log_preset_menu.get_logger('delete_macro')
@@ -233,109 +236,6 @@ class PresetMenu:
 			logger.exception(e)
 
 
-	#region submenus
-	def submenu_create_macro(self):
-
-		logger = self.log_preset_menu.get_logger('submenu_create_macro')
-		try:
-			create_macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - Create Macro',
-				'Put your mouse over the desired location and press a button on your keyboard to bind it.',
-				show_exit_option=True)
-			# key_item = cm_items.MenuItem('Press a key.')
-			# back = cm_items.MenuItem('Back', should_exit=True)
-			# create_macro_menu.append_item(key_item)
-			# create_macro_menu.append_item(back)
-			result = self.preset.create_new_macro()
-
-			create_macro_menu.show()
-
-
-			# if result is not None:
-			# 	key_item.text = f'{result[0]}: {result[1]}'
-			
-		except Exception as e:
-			logger.exception(e)
-
-
-	def create_macro(self, key=None):
-
-		logger = self.log_preset_menu.get_logger('create_macro')
-
-		try:
-			if key is None:
-				key, _ = self.preset.create_new_macro()
-
-			macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - {key}')
-			macro_submenu = cm_items.SubmenuItem(f'{key}', macro_menu, self.preset_menu)
-
-			edit_macro = cm_items.FunctionItem('Edit Macro', self.start_stop)
-			delete_macro = cm_items.FunctionItem('Delete Macro', lambda: self.delete_macro(macro_menu, macro_submenu))
-
-			macro_menu.append_item(edit_macro)
-			macro_menu.append_item(delete_macro)
-
-			self.preset_menu.items.insert(3, macro_submenu)
-			self.preset_menu.draw()
-		except Exception as e:
-			logger.exception(e)
-
-
-	def submenu_change_name(self):
-		logger = self.log_preset_menu.get_logger('change_name_menu')
-		menu = cm.ConsoleMenu('Give it a good name', 
-			'Like 420blazeitfaggot or maybe duckmysickUcuckingfunt', show_exit_option=True)
-		menu.show()
-		menu.pause()
-		new_name = menu.get_input()
-		logger.debug(f'new_name: {new_name}')
-
-
-	def submenus_delete_preset(self):
-
-		delete_very_sad = lambda: self.submenu_choice(':(', [':((', ':((('])
-		delete_ok_sorry = lambda: self.submenu_choice('Too late bitch', [':(', ':(('])
-
-		delete_after_menu = lambda: self.submenu_choice('Bitch y u press in the first place then', 
-												["Ok sorry, you're right. Delete!", '¯\_(ツ)_/¯'],
-												[delete_ok_sorry, delete_very_sad])
-
-		delete_prompt = lambda: self.submenu_choice('Delete?', ['Yes!', 'Wait nO'], 
-											[self.delete_preset, delete_after_menu])
-
-		delete_prompt()
-
-
-	def submenu_choice(self, title, text, function=None):
-
-		logger = self.log_preset_menu.get_logger(f'choice: {title}')
-
-		try:
-			menu = cm.ConsoleMenu(f'{title}', show_exit_option=False)
-
-			for i, text in enumerate(text):
-				if function is not None:
-					if function[i] is not None:
-						choice = cm_items.FunctionItem(f'{text}', function[i], should_exit=True)
-				else:
-					choice = cm_items.MenuItem(f'{text}', should_exit=True)
-
-				menu.append_item(choice)
-
-
-			menu.show()
-			
-		except Exception as e:
-			logger.exception(e)
-	#endregion submenus
-
-
-
-	@property
-	def macros(self):
-		global presets
-		return presets[self.name]
-
-	#region preset menu functions
 	def change_name(self):
 		global presets
 		logger = self.log_preset_menu.get_logger('change_name')
@@ -383,6 +283,110 @@ class PresetMenu:
 
 	#endregion
 
+
+    #region menu creators
+	def submenu_creator(self, title, text, function=None):
+
+		logger = self.log_preset_menu.get_logger(f'choice: {title}')
+
+		try:
+			menu = cm.ConsoleMenu(f'{title}', show_exit_option=False)
+
+			for i, text in enumerate(text):
+				if function is not None:
+					if function[i] is not None:
+						choice = cm_items.FunctionItem(f'{text}', function[i], should_exit=True)
+				else:
+					choice = cm_items.MenuItem(f'{text}', should_exit=True)
+
+				menu.append_item(choice)
+
+
+			menu.show()
+			
+		except Exception as e:
+			logger.exception(e)
+
+
+	def submenu_create_macro(self):
+        # create a menu that pops up when one creates a new macro
+
+		logger = self.log_preset_menu.get_logger('submenu_create_macro')
+		try:
+			create_macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - Create Macro',
+				'Put your mouse over the desired location and press a button on your keyboard to bind it.',
+				show_exit_option=True)
+			# key_item = cm_items.MenuItem('Press a key.')
+			# back = cm_items.MenuItem('Back', should_exit=True)
+			# create_macro_menu.append_item(key_item)
+			# create_macro_menu.append_item(back)
+			result = self.preset.create_new_macro()
+
+			create_macro_menu.show()
+
+
+			# if result is not None:
+			# 	key_item.text = f'{result[0]}: {result[1]}'
+			
+		except Exception as e:
+			logger.exception(e)
+
+
+	def submenu_macro(self, key=None):
+
+		logger = self.log_preset_menu.get_logger('create_macro')
+
+		try:
+			if key is None:
+				key, _ = self.preset.create_new_macro()
+
+			macro_menu = cm.ConsoleMenu(f'Macros - {self.name} - {key}')
+			macro_submenu = cm_items.SubmenuItem(f'{key}', macro_menu, self.preset_menu)
+
+			edit_macro = cm_items.FunctionItem('Edit Macro', self.start_stop)
+			delete_macro = cm_items.FunctionItem('Delete Macro', lambda: self.delete_macro(macro_menu, macro_submenu))
+
+			macro_menu.append_item(edit_macro)
+			macro_menu.append_item(delete_macro)
+
+			self.preset_menu.items.insert(3, macro_submenu)
+			self.preset_menu.draw()
+		except Exception as e:
+			logger.exception(e)
+
+
+	def submenu_change_name(self):
+		logger = self.log_preset_menu.get_logger('change_name_menu')
+		menu = cm.ConsoleMenu('Give it a good name', 
+			'Like 420blazeitfaggot or maybe duckmysickUcuckingfunt', show_exit_option=True)
+		menu.show()
+		menu.pause()
+		new_name = menu.get_input()
+		logger.debug(f'new_name: {new_name}')
+
+
+	def submenus_delete_preset(self):
+
+		delete_very_sad = lambda: self.submenu_creator(':(', [':((', ':((('])
+		delete_ok_sorry = lambda: self.submenu_creator('Too late bitch', [':(', ':(('])
+
+		delete_after_menu = lambda: self.submenu_creator('Bitch y u press in the first place then', 
+												["Ok sorry, you're right. Delete!", '¯\_(ツ)_/¯'],
+												[delete_ok_sorry, delete_very_sad])
+
+		delete_prompt = lambda: self.submenu_creator('Delete?', ['Yes!', 'Wait nO'], 
+											[self.delete_preset, delete_after_menu])
+
+		delete_prompt()
+    #endregion
+
+
+
+
+	@property
+	def macros(self):
+		global presets
+		return presets[self.name]
 
 
 
