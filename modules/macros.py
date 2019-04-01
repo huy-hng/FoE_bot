@@ -181,7 +181,7 @@ class PresetMenu:
 		self.main_menu.append_item(self.submenu_item)
 
 		self.start_stop	= cm_items.FunctionItem('Start'             , self.start_stop            )
-		create_macro	= cm_items.FunctionItem('Create new Macro'  , self.submenu_macro			 )
+		create_macro	= cm_items.FunctionItem('Create new Macro'  , self.submenu_macro		 )
 		line			= cm_items.MenuItem    ('─────────────────────'                    )
 		change_name		= cm_items.FunctionItem('Change Preset Name', self.change_name           )
 		delete          = cm_items.FunctionItem('Delete Preset'     , self.submenus_delete_preset)
