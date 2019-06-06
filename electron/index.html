@@ -7,8 +7,14 @@
   </head>
   <body>
     <video id="video"></video>
+    <button id="button">Get screenshot</button>
+    <img id="img" />
+    <ol id="olFrames"></ol>
+    <script src="screenshot.js"></script>
     <script>
-      require("./screenshot.js");
+      document
+        .getElementById("button")
+        .addEventListener("click", getScreenshot);
     </script>
   </body>
 </html>
