@@ -1,3 +1,0 @@
-cd ..
-FoE.py
-pause
