@@ -11,7 +11,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1280,
     height: 720,
-    webPreferences: { webviewTag: true }
+    webPreferences: { webviewTag: true, nodeIntegration: true }
   });
 
   win.loadURL(
@@ -21,6 +21,7 @@ function createWindow() {
       slashes: true
     })
   );
+  win.webContents.openDevTools();
 
   win.on("closed", () => {
     win = null;
