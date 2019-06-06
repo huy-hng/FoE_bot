@@ -68,7 +68,10 @@ def main():
 
         
         print(row[i_lvl], row[i_fp], save_list)
-        print(row[i_lvl], f'Greg P1({math.ceil(p1 * 1.9)}), P2({math.ceil(p2 * 1.9)}), P3({math.ceil(p3 * 1.9)}), P4({math.ceil(p4 * 1.9)}), P5({math.ceil(p5 * 1.9)})')
+        print(f'    P1 {math.ceil(p1 * 1.9)}, P2 {math.ceil(p2 * 1.9)}, P3 {math.ceil(p3 * 1.9)}, p4 {math.ceil(p4 * 1.9)}, p5 {math.ceil(p5 * 1.9)}')
+        
+        if (int(row[i_lvl]) + 1) % 10 == 0:
+            print()
 
 
 
