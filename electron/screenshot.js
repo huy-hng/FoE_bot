@@ -1,36 +1,33 @@
-// In the renderer process.
 const { desktopCapturer } = require("electron");
+const { PythonShell } = require("python-shell");
+const path = require("path");
 
 function getScreenshot() {
-  desktopCapturer
-    .getSources({ types: ["window", "screen"] })
-    .then(async sources => {
-      for (const source of sources) {
-        console.log(source.name);
-
-        if (source.name === "FoE Bot") {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: false,
-              video: {
-                mandatory: {
-                  chromeMediaSource: "desktop",
-                  chromeMediaSourceId: source.id,
-                  minWidth: 1280,
-                  maxWidth: 1280,
-                  minHeight: 720,
-                  maxHeight: 720
-                }
+  desktopCapturer.getSources({ types: ["window"] }).then(async sources => {
+    for (const source of sources) {
+      if (source.name === "FoE Bot") {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: source.id,
+                minWidth: 1280,
+                maxWidth: 1280,
+                minHeight: 720,
+                maxHeight: 720
               }
-            });
-            handleStream(stream);
-          } catch (e) {
-            handleError(e);
-          }
-          return;
+            }
+          });
+          handleStream(stream);
+        } catch (e) {
+          handleError(e);
         }
+        return;
       }
-    });
+    }
+  });
 }
 
 function handleStream(stream) {
@@ -38,6 +35,7 @@ function handleStream(stream) {
   video.srcObject = stream;
   video.onloadedmetadata = () => {
     video.play();
+    video.pause();
     // Create canvas
     let canvas = document.createElement("canvas");
     canvas.height = video.videoHeight;
@@ -46,18 +44,39 @@ function handleStream(stream) {
     let ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    let img = new Image();
-    img.src = canvas.toDataURL();
-    console.log(img);
-    document.getElementById("img").setAttribute("src", img.src);
+    let byte_img = canvas.toDataURL().split(",");
 
-    // let li = document.createElement("li");
-    // li.appendChild(img);
-    // document.getElementById("olFrames").appendChild(li);
+    save_img(byte_img[1]);
   };
-  console.log(stream);
 }
 
 function handleError(e) {
   console.log(e);
+}
+
+function save_img(base64str) {
+  const fs = require("fs");
+  const Buffer = require("buffer").Buffer;
+
+  let buf = Buffer.from(base64str, "base64");
+
+  fs.writeFile("./img.png", buf, err => {
+    if (err) {
+      return console.log(err);
+    }
+  });
+}
+
+function pass_img_to_python(img) {
+  let options = {
+    mode: "binary",
+    scriptPath: path.join(__dirname, "/../python/"),
+    args: [img]
+  };
+
+  let pyshell = new PythonShell("main.py", options);
+
+  pyshell.on("message", function(message) {
+    console.log(message);
+  });
 }

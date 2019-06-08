@@ -1,10 +1,10 @@
-let { PythonShell } = require("python-shell");
-var path = require("path");
+const { PythonShell } = require("python-shell");
+const path = require("path");
 
 function pass_args() {
-  var text = document.getElementById("text").value;
+  let text = document.getElementById("text").value;
 
-  var options = {
+  let options = {
     scriptPath: path.join(__dirname, "/../python/"),
     args: [text]
   };

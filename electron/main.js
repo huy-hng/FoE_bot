@@ -9,8 +9,8 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 1600,
+    height: 900,
     webPreferences: { webviewTag: true, nodeIntegration: true }
   });
 
