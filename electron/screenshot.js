@@ -30,10 +30,11 @@ function getScreenshot() {
   });
 }
 
-function handleStream(stream) {
+async function handleStream(stream) {
   const video = document.querySelector("video");
+  video.style.cssText = "position:absolute;top:-10000px;left:-10000px;";
   video.srcObject = stream;
-  video.onloadedmetadata = () => {
+  video.onloadedmetadata = async () => {
     video.play();
     video.pause();
     // Create canvas
@@ -46,7 +47,8 @@ function handleStream(stream) {
 
     let byte_img = canvas.toDataURL().split(",");
 
-    save_img(byte_img[1]);
+    await save_img(byte_img[1]);
+    launch_python();
   };
 }
 
@@ -60,18 +62,21 @@ function save_img(base64str) {
 
   let buf = Buffer.from(base64str, "base64");
 
-  fs.writeFile("./img.png", buf, err => {
+  fs.writeFile("img.png", buf, err => {
     if (err) {
       return console.log(err);
+    } else {
+      console.log("image written");
+      return true;
     }
   });
 }
 
-function pass_img_to_python(img) {
+function launch_python() {
   let options = {
-    mode: "binary",
+    // mode: "binary",
     scriptPath: path.join(__dirname, "/../python/"),
-    args: [img]
+    args: []
   };
 
   let pyshell = new PythonShell("main.py", options);
