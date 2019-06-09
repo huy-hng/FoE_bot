@@ -13,6 +13,6 @@ function pass_args() {
 
   pyshell.on("message", function(message) {
     console.log(message);
+    // text = message
   });
-  document.getElementById("text").value = "";
 }
