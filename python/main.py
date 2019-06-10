@@ -3,9 +3,13 @@ import time
 
 import cv2
 
-args = sys.argv[1]
+import sandbox.python.templates.cv2_tools as cv2_tools
 
-print(args)
+# args = sys.argv[1]
+# print(args)
 
-img = cv2.imread('img.png')
+screen = cv2.imread('img.png')
+prob, loc = cv2_tools.get_template_loc(screen, template)
+print(loc)
+
 print(img.shape)
