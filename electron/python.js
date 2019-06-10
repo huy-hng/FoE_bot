@@ -6,9 +6,10 @@ function pass_args() {
 
   let options = {
     scriptPath: path.join(__dirname, "/../python/"),
-    args: [text]
+    args: ["value1"]
   };
 
+  console.log(options);
   let pyshell = new PythonShell("main.py", options);
 
   pyshell.on("message", function(message) {

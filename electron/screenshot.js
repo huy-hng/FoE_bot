@@ -48,7 +48,7 @@ async function handleStream(stream) {
     let byte_img = canvas.toDataURL().split(",");
 
     await save_img(byte_img[1]);
-    launch_python();
+    get_coord();
   };
 }
 
@@ -76,12 +76,45 @@ function launch_python() {
   let options = {
     // mode: "binary",
     scriptPath: path.join(__dirname, "/../python/"),
-    args: []
+    args: ["value1"]
   };
 
   let pyshell = new PythonShell("main.py", options);
 
   pyshell.on("message", function(message) {
     console.log(message);
+  });
+}
+
+let uint8arrayToString = function(data) {
+  return String.fromCharCode.apply(null, data);
+};
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function get_coord() {
+  const spawn = require("child_process").spawn;
+  // const scriptExecution = spawn(
+  //   path.join(__dirname, "/../python/dist/main/main.exe"),
+  //   ["args"]
+  // );
+
+  const scriptExecution = spawn("C:\\Python\\Python37\\python.exe", [
+    path.join(__dirname, "/../python/main.py"),
+    "args"
+  ]);
+
+  scriptExecution.stdout.on("data", data => {
+    console.log(uint8arrayToString(data));
+  });
+
+  scriptExecution.stderr.on("data", data => {
+    console.log(uint8arrayToString(data));
+  });
+
+  scriptExecution.on("exit", code => {
+    console.log("Process quit with code : " + code);
   });
 }
