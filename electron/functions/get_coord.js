@@ -9,12 +9,7 @@ let uint8arrayToString = function(data) {
 };
 
 async function get_coord(template_str) {
-  console.log("get screenshot start");
   await get_screenshot();
-  console.log("get screenshot end");
-
-  console.log("start python process");
-  // await sleep(2000);
 
   const spawn = require("child_process").spawn;
   // const scriptExecution = spawn(
@@ -39,12 +34,13 @@ async function get_coord(template_str) {
   });
   scriptExecution.on("exit", code => {
     console.log("Python Process quit with code : " + code);
-    finished_python = true
+    finished_python = true;
   });
 
   while (!finished_python) {
-    await sleep(10)
+    await sleep(10);
   }
+  console.log(python_return);
   return JSON.parse(python_return);
 }
 
