@@ -9,7 +9,7 @@
     <input id="button" value="Fullscreen screenshot" type="button" />
 
     <webview
-      id="foo"
+      id="webview"
       src="https://de0.forgeofempires.com/page/"
       style="display:inline-flex; width:1280px; height:720px"
     ></webview>
@@ -17,11 +17,10 @@
     <img id="img" />
     <video id="video"></video>
 
-    <script src="screenshot.js"></script>
+    <script src="helper.js"></script>
+    <script src="./functions/mouse_press.js"></script>
     <script>
-      document
-        .getElementById("button")
-        .addEventListener("click", getScreenshot);
+      document.getElementById("button").addEventListener("click", help_one);
     </script>
   </body>
 </html>

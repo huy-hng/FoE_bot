@@ -1,15 +1,19 @@
 import sys
-import time
-
+import json
 import cv2
 
-import sandbox.python.templates.cv2_tools as cv2_tools
+str_template = sys.argv[1]
 
-# args = sys.argv[1]
-# print(args)
 
+template = cv2.imread(f'img/{str_template}.png')
 screen = cv2.imread('img.png')
-prob, loc = cv2_tools.get_template_loc(screen, template)
-print(loc)
 
-print(img.shape)
+result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+_, prob, _, loc = cv2.minMaxLoc(result)
+
+data = {
+    'prob': prob,
+    'loc': loc,
+}
+
+print(json.dumps(data))

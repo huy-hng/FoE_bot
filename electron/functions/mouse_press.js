@@ -1,4 +1,5 @@
 function mouse_press(x, y) {
+  // let webview = document.getElementById('webview');
   webview.sendInputEvent({
     type: "mouseDown",
     x: x,
