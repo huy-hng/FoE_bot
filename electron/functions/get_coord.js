@@ -1,5 +1,4 @@
 const path = require("path");
-const get_screenshot = require("./screenshot");
 const sleep = require("./sleep");
 
 
@@ -9,8 +8,6 @@ let uint8arrayToString = function(data) {
 };
 
 async function get_coord(template_str) {
-  await get_screenshot();
-
   const spawn = require("child_process").spawn;
   // const scriptExecution = spawn(
   //   path.join(__dirname, "/../python/dist/main/main.exe"),
@@ -40,7 +37,7 @@ async function get_coord(template_str) {
   while (!finished_python) {
     await sleep(10);
   }
-  console.log(python_return);
+  // console.log(python_return);
   return JSON.parse(python_return);
 }
 

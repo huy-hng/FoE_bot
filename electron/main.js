@@ -1,4 +1,9 @@
 const electron = require("electron");
+require('electron-reload')(__dirname, {
+  electron: require(`${__dirname}/node_modules/electron`),
+  ignored: /img.png/, argv: []
+});
+
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 //const {app, BrowserWindow} = require('electron')
@@ -9,10 +14,12 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1600,
-    height: 900,
-    webPreferences: { webviewTag: true, nodeIntegration: true }
+    width: 1920,
+    height: 1080,
+    webPreferences: { webviewTag: true, nodeIntegration: true },
   });
+  win.removeMenu();
+  win.maximize();
 
   win.loadURL(
     url.format({

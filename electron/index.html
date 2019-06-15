@@ -7,13 +7,13 @@
   </head>
   <body>
     
-    <webview
+    <webview class="border"
     id="webview"
     src="https://de0.forgeofempires.com/page/"
     style="display:inline-flex; width:1280px; height:720px"
     ></webview>
+    <button id="button">Screenshot</button>
     
-    <input id="button" value="Fullscreen screenshot" type="button" />
     
     <img id="img" />
     <video id="video"></video>
@@ -21,7 +21,10 @@
     <script src="helper.js"></script>
     <!-- <script src="./functions/mouse_press.js"></script> -->
     <script>
-      document.getElementById("button").addEventListener("click", help_one);
+      function do_later() {
+        setTimeout(help_one, 2000)
+      }
+      document.getElementById("button").addEventListener("click", help_all);
     </script>
   </body>
 </html>
