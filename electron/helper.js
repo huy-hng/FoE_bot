@@ -1,31 +1,44 @@
-const get_coord = require("./functions/get_coord");
+const spawn_python = require("./functions/spawn_python");
 const mouse_press = require("./functions/mouse_press");
 const get_screenshot = require("./functions/screenshot");
 const sleep = require("./functions/sleep");
+const Initializer = require("./initialize")
 
-async function click_img(img_name) {
-  await get_screenshot();
-  let {prob, coord} = await get_coord(img_name);
-
-  // console.log("prob", prob);
-  // console.log("coord", coord);
-
-  if (prob > 0.8){
-    await mouse_press(coord)
+async function help_all() {
+  const initializer = await new Initializer();
+  await sleep(2000)
+  const scale = initializer.scale;
+  const message = initializer.message;
+  if (message) {
+    console.log(message);
+    return;
   }
-  return prob
+  await help_page(scale);
+  await click_img("next");
+  await help_page(scale);
 }
 
-async function help_page() {
+async function help_page(scale) {
   let help_prob = 1;
   while (help_prob > 0.8) {
-    help_prob = await click_img('help')
+    help_prob = await click_img("help", scale);
     console.log(help_prob);
-  } 
+  }
 }
-async function help_all() {
-  await help_page()
-  await click_img('next')
-  await help_page()
-  
+
+async function click_img(str_template, scale) {
+  await get_screenshot("screen.png");
+  let { prob, coord } = await spawn_python("find_template", str_template, scale);
+  if (prob > 0.8) {
+    await mouse_press(coord);
+  }
+  return prob;
+}
+
+async function check_last_page() {
+  await get_screenshot("last_screen.png");
+  await click_img("next");
+  await sleep(500);
+  await get_screenshot("screen.png");
+  let { prob, coord } = await spawn_python("check_last_page", img_name);
 }
