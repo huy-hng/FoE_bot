@@ -12,10 +12,13 @@ async function spawn_python(script, ...args) {
   //   ["args"]
   // );
 
+  console.log(
+    `Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`
+  );
   const scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
     path.join(__dirname, `../../python/main.py`),
     script,
-    args
+    JSON.stringify(args)
   ]);
 
   let python_return = "";

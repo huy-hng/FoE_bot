@@ -6,16 +6,21 @@ const Initializer = require("./initialize")
 
 async function help_all() {
   const initializer = await new Initializer();
-  await sleep(2000)
+  await sleep(10000)
   const scale = initializer.scale;
   const message = initializer.message;
+  const webview_region = initializer.webview_region;
+  const roi_region = initializer.roi_region;
+  console.log('scale', scale);
+  console.log('message', message);
+  console.log('webview_region', webview_region);
+  console.log('roi_region', roi_region);
   if (message) {
-    console.log(message);
     return;
   }
-  await help_page(scale);
-  await click_img("next");
-  await help_page(scale);
+  // await help_page(scale);
+  // await click_img("next");
+  // await help_page(scale);
 }
 
 async function help_page(scale) {

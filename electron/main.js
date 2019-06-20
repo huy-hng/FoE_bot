@@ -3,11 +3,11 @@ const url = require("url");
 
 const { app, BrowserWindow } = require("electron");
 
-// require("electron-reload")(__dirname, {
-//   electron: require(`${__dirname}/node_modules/electron`),
-//   ignored: /img.png|index.html/,
-//   argv: []
-// });
+require("electron-reload")(__dirname, {
+  electron: require(`${__dirname}/node_modules/electron`),
+  ignored: /screen.png|index.html/,
+  argv: []
+});
 
 function createWindow() {
   let win = new BrowserWindow({

@@ -4,25 +4,20 @@ const spawn_python = require("./functions/spawn_python");
 class Initializer {
   constructor() {
     this.initialize();
-    
   }
 
   async initialize() {
     this.webview_region = await this.get_webview_region();
-    console.log('this.webview_region', this.webview_region);
-
-    let scale = await this.get_scale_and_check_logged_in()
-    this.message;
-    console.log('scale', scale);
-    if (scale) {
-      this.scale = scale
+    this.scale = await this.get_scale_and_check_logged_in()
+    
+    // this.webview_region = [4, 1283, 4, 725];
+    // this.scale = 1.022222222222222;
+    
+    if (this.scale) {
+      this.roi_region = await this.get_roi_region(this.webview_region, this.scale)
     } else {
       this.message = 'You need to log in.'
-      // console.log(this.message);
-      this.message
     }
-
-    let roi_region = await this.get_roi_region(this.scale)
   }
 
   async get_webview_region() {
@@ -35,7 +30,7 @@ class Initializer {
 
   async get_scale_and_check_logged_in() {
     let data = await spawn_python("get_scale_and_check_logged_in");
-    if (data.result == true) {
+    if (data.result === true) {
       return data.scale;
     } else if (data.result == 'press arrow_up') {
       let data = await spawn_python("find_template", 'arrow_up', data.scale);
@@ -45,8 +40,8 @@ class Initializer {
     }
   }
 
-  async get_roi_region(scale) {
-    let roi_region = await spawn_python("get_roi_region", scale);
+  async get_roi_region(webview_region, scale) {
+    let roi_region = await spawn_python("get_roi_region", webview_region, scale);
     return roi_region
   }
 
