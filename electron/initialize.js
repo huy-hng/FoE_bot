@@ -8,15 +8,16 @@ class Initializer {
 
   async initialize() {
     this.webview_region = await this.get_webview_region();
-    this.scale = await this.get_scale_and_check_logged_in()
-    
-    // this.webview_region = [4, 1283, 4, 725];
-    // this.scale = 1.022222222222222;
+    // console.log('this.webview_region', this.webview_region);
+    this.scale = await this.get_scale_and_check_logged_in(this.webview_region)
+    // console.log('this.scale', this.scale);
     
     if (this.scale) {
-      this.roi_region = await this.get_roi_region(this.webview_region, this.scale)
+      this.roi_region = await this.get_roi_region(this.scale, this.webview_region)
+      // console.log('this.roi_region', this.roi_region);
     } else {
       this.message = 'You need to log in.'
+      // console.log('this.message', this.message);
     }
   }
 
@@ -28,34 +29,22 @@ class Initializer {
     return region
   }
 
-  async get_scale_and_check_logged_in() {
-    let data = await spawn_python("get_scale_and_check_logged_in");
+  async get_scale_and_check_logged_in(webview_region) {
+    let data = await spawn_python("get_scale_and_check_logged_in", webview_region);
     if (data.result === true) {
       return data.scale;
     } else if (data.result == 'press arrow_up') {
-      let data = await spawn_python("find_template", 'arrow_up', data.scale);
+      let data = await spawn_python("find_template", 'arrow_up', data.scale, webview_region);
       return data.scale;
     } else {
       return false;
     }
   }
 
-  async get_roi_region(webview_region, scale) {
-    let roi_region = await spawn_python("get_roi_region", webview_region, scale);
+  async get_roi_region(scale, webview_region) {
+    let roi_region = await spawn_python("get_roi_region", scale, webview_region);
     return roi_region
   }
-
-
-  //#region helper functions
-  async click_img(img_name) {
-    await get_screenshot("screen.png");
-    let { prob, coord } = await spawn_python("find_template", img_name, this.scale);
-    if (prob > 0.8) {
-      await mouse_press(coord);
-    }
-    return prob;
-  }
-  //#endregion
 }
 
 module.exports = Initializer;

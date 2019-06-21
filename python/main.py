@@ -14,10 +14,11 @@ def create_debugger(should_print):
     return debug
 
 
-def read_img(region, name='screen'):
-    screen = cv2.imread(f'{name}.png')
-    cropped = crop_image(screen, region)
-    return cropped
+def read_img(name='screen.png', region=None):
+    screen = cv2.imread(name)
+    if region is not None:
+        screen = crop_image(screen, region)
+    return screen
 
 
 def crop_image(screen, region):
@@ -30,33 +31,28 @@ def crop_image(screen, region):
     return webview
 
 
-def show_img(img):
-    cv2.imshow('img', img)
+def show_img(img, name=''):
+    cv2.imshow(name, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-def timer(function):
-    @wraps(function)
-    def wrapper(*args, **kwargs):
+def show_images(*images):
+    for i, image in enumerate(images):
+        cv2.imshow(str(i), image)
 
-        # debug(f'{function.__name__}')
-        t1 = time.perf_counter()
-        result = function(*args, **kwargs)
-        t2 = time.perf_counter()
-        debug(f'{function.__name__} ran in: {round(t2 - t1, 4)} sec')
-        return result
-    return wrapper
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 #endregion helpers
 
 
 
 #region javascript endpoint
-@timer
-def find_template(str_template, scale):
+def find_template(str_template, scale, webview_region):
 
-    screen = cv2.imread('screen.png')
+    screen = read_img(region=webview_region)
     template = cv2.imread(f'img/{str_template}.png')
+    # print(type(template))
     template_resized = cv2.resize(template, None, fx=scale, fy=scale)
     height, width, _ = template_resized.shape
 
@@ -69,48 +65,28 @@ def find_template(str_template, scale):
     }
     return data
 
+
+def check_last_page(webview_region, roi_region):
+    last_screen_webview = read_img('last_screen.png', webview_region)
+    last_screen_roi = crop_image(last_screen_webview, roi_region)
+
+    screen_webview = read_img('screen.png', webview_region)
+    screen_roi = crop_image(screen_webview, roi_region)
+
+    result = cv2.matchTemplate(screen_roi, last_screen_roi, cv2.TM_CCOEFF_NORMED)
+    _, prob, _, _ = cv2.minMaxLoc(result)
+
+    return prob
+
 #region initializer
-@timer
-def get_webview_region_2(*_):
-    """ Stand alone function """
-    screen = cv2.imread('screen.png')
-    # function: threshold green
-    def threshold_green(screen): return cv2.inRange(
-        screen, np.array([[0, 220, 0]]), np.array([40, 255, 40]))
-
-    thresholded = threshold_green(screen)
-
-    # get all pixels that are green
-    green_mask = thresholded > 0
-    # crop image with green mask
-    greenborder_only = thresholded[np.ix_(
-        green_mask.any(1), green_mask.any(0))]
-
-    # get green border again
-    # reverse image
-    img_inv = cv2.bitwise_not(greenborder_only)
-    mask = img_inv > 0
-
-    coords = np.ix_(mask.any(1), mask.any(0))
-    x_coords = np.squeeze(coords[1])
-    y_coords = np.squeeze(coords[0])
-    xmin = int(x_coords[0])
-    xmax = int(x_coords[-1])
-    ymin = int(y_coords[0])
-    ymax = int(y_coords[-1])
-
-    show_img(thresholded)
-    show_img(img_inv)
-    show_img(screen[coords])
-    return [xmin, xmax, ymin, ymax]
-
-@timer
 def get_webview_region(*_):
     """ Stand alone function """
     screen = cv2.imread('screen.png')
     # function: threshold green
-    def threshold_green(screen): return cv2.inRange(
-        screen, np.array([[0, 220, 0]]), np.array([40, 255, 40]))
+    threshold_green = lambda screen: cv2.inRange(
+        screen, 
+        np.array([[0, 220, 0]]), 
+        np.array([40, 255, 40]))
 
     thresholded = threshold_green(screen)
 
@@ -126,16 +102,14 @@ def get_webview_region(*_):
     ymin = int(y_coords[0] + border_thickness)
     ymax = int(y_coords[-1] - border_thickness)
 
-
     return [xmin, xmax, ymin, ymax]
 
 
-@timer
-def get_scale_and_check_logged_in(*_):
+def get_scale_and_check_logged_in(webview_region):
     def loop_through_scales(str_template):
         arrow_prob = []
         for scale in np.linspace(0.8, 1.2, 10)[::-1]:
-            data = find_template(str_template, scale)
+            data = find_template(str_template, scale, webview_region)
             prob = data['prob']
             if prob > 0.9:
                 return [prob, scale]
@@ -165,46 +139,40 @@ def get_scale_and_check_logged_in(*_):
     # not logged in
     return {'result': False}
 
-@timer
-def get_roi_region(webview_region, scale):
+
+def get_roi_region(scale, webview_region):
+    """ region within the webview, in other words
+        relative to 0/0 of webview, eventhough webview
+        coords starts at 4/34 in absolute scale """
 
     scale = float(scale)
-    loc_guild = find_template('guild_tab', scale)['coord']
-    loc_prev = find_template('previous', scale)['coord']
-    loc_next = find_template('next', scale)['coord']
+    loc_guild = find_template('guild_tab', scale, webview_region)['coord']
+    loc_prev = find_template('previous', scale, webview_region)['coord']
+    loc_next = find_template('next', scale, webview_region)['coord']
 
     roi_region = [
         loc_prev[0] - 20,
         loc_next[0] + 20,
         loc_guild[1] - 20,
-        webview_region[3]
+        webview_region[3] - webview_region[2]
     ]
 
-    screen = read_img(roi_region)
-    show_img(screen)
+    # screen = read_img(region=roi_region)
+    # show_img(screen)
     return roi_region
 #endregion
 
-
 #endregion
 
-
-
-def check_last_page():
-    last_screen = cv2.imread('last_screen.png')
-    screen = cv2.imread('screen.png')
-
-    prob_last_page, _ = cv2_tools.get_template_loc(screen_next, screen)
-    return prob_last_page
-
-
-script = sys.argv[1]
-args = sys.argv[2]
-args = json.loads(args)
-
 debug = create_debugger(False)
-# debug(*args)
+if __name__ == '__main__':
+    script = sys.argv[1]
+    args = sys.argv[2]
+    args = json.loads(args)
 
-exec(f'data = {script}(*{args})')
-debug(data)
-print(json.dumps(data))
+    # debug(*args)
+
+    #pylint: disable=E0602
+    exec(f'data = {script}(*{args})')
+    debug(data)
+    print(json.dumps(data))

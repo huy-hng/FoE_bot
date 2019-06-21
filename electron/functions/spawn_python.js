@@ -12,9 +12,7 @@ async function spawn_python(script, ...args) {
   //   ["args"]
   // );
 
-  console.log(
-    `Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`
-  );
+  // console.log(`Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`);
   const scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
     path.join(__dirname, `../../python/main.py`),
     script,
@@ -26,9 +24,11 @@ async function spawn_python(script, ...args) {
 
   scriptExecution.stdout.on("data", data => {
     python_return += uint8arrayToString(data);
+    // console.log(python_return);
   });
   scriptExecution.stderr.on("data", data => {
     python_return += uint8arrayToString(data);
+    console.log(python_return);
   });
   scriptExecution.on("exit", code => {
     // console.log("Python Process quit with code : " + code);
@@ -38,7 +38,6 @@ async function spawn_python(script, ...args) {
   while (!finished_python) {
     await sleep(10);
   }
-  console.log(python_return);
   try {
     return JSON.parse(python_return);
   } catch {
