@@ -6,7 +6,7 @@ const initialize = require("./initialize")
 
 async function help_all() {
 
-  let { scale, webview_region, roi_region } = await initialize();
+  let { scale, webview_region, roi_region, message } = await initialize();
   if (message) {
     console.log(message);
     return;

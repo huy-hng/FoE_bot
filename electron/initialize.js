@@ -4,11 +4,13 @@ const spawn_python = require("./functions/spawn_python");
 
 
 async function initialize() {
-  webview_region = await get_webview_region();
+  let webview_region = await get_webview_region();
   // console.log('webview_region', webview_region);
-  scale = await get_scale_and_check_logged_in(webview_region)
+  let scale = await get_scale_and_check_logged_in(webview_region)
   // console.log('scale', scale);
   
+  let roi_region;
+  let message;
   if (scale) {
     roi_region = await get_roi_region(scale, webview_region)
     // console.log('roi_region', roi_region);
