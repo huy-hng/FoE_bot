@@ -2,11 +2,15 @@ const spawn_python = require("./functions/spawn_python");
 const mouse_press = require("./functions/mouse_press");
 const get_screenshot = require("./functions/screenshot");
 const sleep = require("./functions/sleep");
-const Initializer = require("./initialize")
+const initialize = require("./initialize")
 
 async function help_all() {
 
   let { scale, webview_region, roi_region } = await initialize();
+  if (message) {
+    console.log(message);
+    return;
+  }
 
   if (roi_region) {
     let last_page_prob = 0; 
@@ -19,19 +23,6 @@ async function help_all() {
   }
 }
 
-async function initialize(){
-  const initializer = await new Initializer();
-  await sleep(5000)
-  const scale = initializer.scale;
-  const message = initializer.message;
-  const webview_region = initializer.webview_region;
-  const roi_region = initializer.roi_region;
-
-  if (message) {
-    return false;
-  }
-  return { scale, webview_region, roi_region }
-}
 
 async function help_page(scale, webview_region) {
   let help_prob = 1;
