@@ -9,7 +9,8 @@ const initialize = require("./initialize")
 
 async function help_all() {
 
-  let { scale, webview_region, roi_region, message } = await initialize();
+  let webview_data = await initialize();
+  let { roi_region, message } = webview_data
   if (message) {
     console.log(message);
     return;
@@ -18,8 +19,8 @@ async function help_all() {
   if (roi_region) {
     let last_page_prob = 0; 
     while (last_page_prob < 0.9){
-      await help_page(scale, webview_region);
-      last_page_prob = await check_last_page(scale, webview_region, roi_region);
+      await help_page(webview_data);
+      last_page_prob = await check_last_page(webview_data);
 
     }
     console.log('Done');
@@ -28,7 +29,7 @@ async function help_all() {
 }
 
 
-async function help_page(scale, webview_region) {
+async function help_page({ scale, webview_region }) {
 
   let help_prob = 1;
   while (help_prob > 0.8) {
@@ -43,16 +44,16 @@ async function help_page(scale, webview_region) {
 }
 
 async function click_img(str_template, scale, webview_region) {
+  console.log(str_template, scale, webview_region)
   await get_screenshot("screen.png");
   let { prob, coord } = await spawn_python("find_template", str_template, scale, webview_region);
-  console.log(str_template, prob, coord)
   if (prob > 0.8) {
     await mouse_press(coord);
   }
   return prob;
 }
 
-async function check_last_page(scale, webview_region, roi_region) {
+async function check_last_page({ scale, webview_region, roi_region }) {
   await get_screenshot("last_screen.png");
   await click_img("next", scale, webview_region);
   await sleep(500);
