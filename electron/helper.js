@@ -1,8 +1,11 @@
+// const Mousetrap = require('mousetrap');
+
 const spawn_python = require("./functions/spawn_python");
 const mouse_press = require("./functions/mouse_press");
 const get_screenshot = require("./functions/screenshot");
 const sleep = require("./functions/sleep");
 const initialize = require("./initialize")
+
 
 async function help_all() {
 
@@ -17,6 +20,7 @@ async function help_all() {
     while (last_page_prob < 0.9){
       await help_page(scale, webview_region);
       last_page_prob = await check_last_page(scale, webview_region, roi_region);
+
     }
     console.log('Done');
     
@@ -25,9 +29,15 @@ async function help_all() {
 
 
 async function help_page(scale, webview_region) {
+
   let help_prob = 1;
   while (help_prob > 0.8) {
     help_prob = await click_img("help", scale, webview_region);
+
+    if (pause) {
+      await pauser();
+    }
+
   }
   console.log('Page finished.');
 }
@@ -50,3 +60,19 @@ async function check_last_page(scale, webview_region, roi_region) {
   let prob = await spawn_python("check_last_page", webview_region, roi_region);
   return prob
 }
+
+//#region pause
+let pause = false;
+
+function toggle_pause() {
+  pause = !pause;
+}
+
+async function pauser() {
+  console.log('Paused.');
+  while (pause) {
+    await sleep(500);
+  }
+  console.log('Unpaused.');
+}
+//#endregion

@@ -12,7 +12,8 @@
     src="https://de0.forgeofempires.com/page/"
     style="display:inline-flex; width:1280px; height:720px"
     ></webview>
-    <button id="button">Screenshot</button>
+    <button id="help_all_button">Help All</button>
+    <button id="pause_button">Pause</button>
     
     
     <img id="img" />
@@ -24,7 +25,8 @@
       function do_later() {
         setTimeout(help_one, 2000)
       }
-      document.getElementById("button").addEventListener("click", help_all);
+      document.getElementById("help_all_button").addEventListener("click", help_all);
+      document.getElementById("pause_button").addEventListener("click", toggle_pause);
     </script>
   </body>
 </html>
