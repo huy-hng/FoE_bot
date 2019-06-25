@@ -10,7 +10,7 @@ import numpy as np
 def create_debugger(should_print):
     def debug(*args):
         if should_print:
-            print(*args)
+            print('debug:', *args)
     return debug
 
 
@@ -52,7 +52,7 @@ def find_template(str_template, scale, webview_region):
 
     screen = read_img(region=webview_region)
     template = cv2.imread(f'img/{str_template}.png')
-    # print(type(template))
+
     template_resized = cv2.resize(template, None, fx=scale, fy=scale)
     height, width, _ = template_resized.shape
 

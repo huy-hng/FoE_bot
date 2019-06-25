@@ -23,21 +23,33 @@ async function spawn_python(script, ...args) {
   let finished_python = false;
 
   scriptExecution.stdout.on("data", data => {
-    python_return += uint8arrayToString(data);
+    let output = uint8arrayToString(data);
+    let lines = output.split('\n')
+
+    for (let line of lines) {
+      if (line.substring(0, 7) === 'debug: ') { console.log(line) }
+      else if (line.length == 0) {}
+      else { python_return = line }
+    }
     // console.log(python_return);
   });
+
+  // handle error
   scriptExecution.stderr.on("data", data => {
-    python_return += uint8arrayToString(data);
-    console.log(python_return);
+    console.log(uint8arrayToString(data));
+    throw 'Python error';
   });
+
+  //#region wait for finish
   scriptExecution.on("exit", code => {
     // console.log("Python Process quit with code : " + code);
     finished_python = true;
   });
-
   while (!finished_python) {
     await sleep(10);
   }
+  //#endregion
+
   try {
     return JSON.parse(python_return);
   } catch {

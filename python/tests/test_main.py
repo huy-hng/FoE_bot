@@ -46,7 +46,7 @@ def test_initialization_logged_in_and_ready():
   assert scale['scale'] == pytest.approx(1, rel=1e-1)  # 1.0105263157894737
   print('scale:', scale['scale'])
 
-  roi_region = main.get_roi_region(webview_region, scale['scale'])
+  roi_region = main.get_roi_region(scale['scale'], webview_region)
   assert roi_region == [225, 933, 556, 719]
 
   if show_img:
@@ -65,6 +65,7 @@ def test_initialization_not_logged_in():
 #endregion
 
 #region single functions
+@timer
 def test_find_template():
   webview_region = [4, 1283, 34, 753]
   data = main.find_template('help', 1.0204081632653061, webview_region)
@@ -76,9 +77,9 @@ def test_find_template():
     cv2.circle(webview, coords, 3, (0, 255, 0), 2)
     main.show_img(webview)
 
-def test_check_last_page():
-  prob = main.check_last_page()
-  print(prob)
+# def test_check_last_page():
+#   prob = main.check_last_page()
+#   print(prob)
 #endregion
 
 
