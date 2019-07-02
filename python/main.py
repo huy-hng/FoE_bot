@@ -6,51 +6,14 @@ from functools import wraps
 import cv2
 import numpy as np
 
-#region helpers
-def create_debugger(should_print):
-    def debug(*args):
-        if should_print:
-            print('debug:', *args)
-    return debug
-
-
-def read_img(name='screen.png', region=None):
-    screen = cv2.imread(name)
-    if region is not None:
-        screen = crop_image(screen, region)
-    return screen
-
-
-def crop_image(screen, region):
-
-    xmin = region[0]
-    xmax = region[1]
-    ymin = region[2]
-    ymax = region[3]
-    webview = screen[ymin:ymax, xmin:xmax]
-    return webview
-
-
-def show_img(img, name=''):
-    cv2.imshow(name, img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def show_images(*images):
-    for i, image in enumerate(images):
-        cv2.imshow(str(i), image)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-#endregion helpers
-
-
 
 #region javascript endpoint
-def find_template(str_template, scale, webview_region):
+def find_template(str_template, scale, webview_region, roi_region=None):
 
     screen = read_img(region=webview_region)
+    if roi_region is not None:
+        screen = crop_image(screen, roi_region)
+
     template = cv2.imread(f'img/{str_template}.png')
 
     template_resized = cv2.resize(template, None, fx=scale, fy=scale)
@@ -59,9 +22,40 @@ def find_template(str_template, scale, webview_region):
     result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
     _, prob, _, loc = cv2.minMaxLoc(result)
 
+    coord = [int(loc[0] + width  / 2),
+             int(loc[1] + height / 2)]
+
+    if roi_region is not None:
+        coord[0] += roi_region[0]
+        coord[1] += roi_region[2]
+
     data = {
         'prob': prob,
-        'coord': [int(loc[0] + width / 2), int(loc[1] + height / 2)],
+        'coord': coord,
+    }
+    return data
+
+
+def find_all_template_locations(str_template, scale, webview_region, roi_region=None):
+
+    screen = read_img(region=webview_region)
+    if roi_region is not None:
+        screen = crop_image(screen, roi_region)
+
+    template = cv2.imread(f'img/{str_template}.png')
+
+    template_resized = cv2.resize(template, None, fx=scale, fy=scale)
+    height, width, _ = template_resized.shape
+
+    result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
+    loc = np.where(result >= 0.8)
+    # print(result)
+    coords = []
+    for pt in zip(*loc[::-1]):
+        coords.append([int(pt[0] + width / 2), int(pt[1] + height / 2)])
+
+    data = {
+        'coords': coords,
     }
     return data
 
@@ -77,6 +71,8 @@ def check_last_page(webview_region, roi_region):
     _, prob, _, _ = cv2.minMaxLoc(result)
 
     return prob
+
+#endregion
 
 #region initializer
 def get_webview_region(*_):
@@ -146,7 +142,7 @@ def get_roi_region(scale, webview_region):
         coords starts at 4/34 in absolute scale """
 
     scale = float(scale)
-    loc_guild = find_template('guild_tab', scale, webview_region)['coord']
+    loc_guild = find_template('guild', scale, webview_region)['coord']
     loc_prev = find_template('previous', scale, webview_region)['coord']
     loc_next = find_template('next', scale, webview_region)['coord']
 
@@ -162,7 +158,46 @@ def get_roi_region(scale, webview_region):
     return roi_region
 #endregion
 
-#endregion
+
+
+#region helpers
+def create_debugger(should_print):
+    def debug(*args):
+        if should_print:
+            print('debug:', *args)
+    return debug
+
+
+def read_img(name='screen.png', region=None):
+    screen = cv2.imread(name)
+    if region is not None:
+        screen = crop_image(screen, region)
+    return screen
+
+
+def crop_image(screen, region):
+
+    xmin = region[0]
+    xmax = region[1]
+    ymin = region[2]
+    ymax = region[3]
+    webview = screen[ymin:ymax, xmin:xmax]
+    return webview
+
+
+def show_img(img, name=''):
+    cv2.imshow(name, img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def show_images(*images):
+    for i, image in enumerate(images):
+        cv2.imshow(str(i), image)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+#endregion helpers
 
 debug = create_debugger(False)
 if __name__ == '__main__':

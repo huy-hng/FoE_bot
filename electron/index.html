@@ -6,31 +6,58 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    
-    <webview class="border"
-    id="webview"
-    src="https://de0.forgeofempires.com/page/"
-    style="display:inline-flex; width:1280px; height:720px"
-    ></webview>
-    <button id="do_all_button">Do Everything</button>
-    <button id="help_all_button">Help All</button>
-    <button id="tavern_button">Visit Taverns</button>
-    <button id="pause_button">Pause</button>
-    
-    
-    <img id="img" />
-    <video id="video"></video>
+
+    <div class="everything">
+      <webview class="border" id="webview" src="https://de0.forgeofempires.com/page/"></webview>
+
+      <div class="sidebar">
+        <div class="buttons">
+          <button class="button" id="start_button">Start</button>
+          <button class="button" id="pause_button">Pause</button>
+          <button class="button" id="stop_button">Stop</button>
+        </div>
+        <hr>
+        <div class="checkboxes">
+          <label>
+            <input class="checkbox" id="friends help" type="checkbox">
+            Help Friends
+          </label>
+          <label>
+            <input class="checkbox" id="guild help" type="checkbox">
+            Help Guild
+          </label>
+          <label>
+            <input class="checkbox" id="neighbors help" type="checkbox">
+            Help Neighbors
+          </label>
+          <label>
+            <input class="checkbox" id="friends tavern" type="checkbox"> 
+            Visit Taverns
+          </label>
+        </div>
+      </div>
+
+    </webview>
+  
+
+    <video class="hide" id="video"></video>
 
     <script src="helper.js"></script>
-    <!-- <script src="./functions/mouse_press.js"></script> -->
     <script>
-      function do_later() {
-        setTimeout(help_one, 2000)
-      }
-      document.getElementById("do_all_button").addEventListener("click", do_all);
-      document.getElementById("help_all_button").addEventListener("click", help_all);
-      document.getElementById("tavern_button").addEventListener("click", visit_taverns);
+      document.getElementById("start_button").addEventListener("click", start);
       document.getElementById("pause_button").addEventListener("click", toggle_pause);
+      document.getElementById("stop_button").addEventListener("click", toggle_stop);
+
+      // document.addEventListener("keydown", e => {
+      //   console.log(e);
+      //   if (e.which === 123) {
+      //     win.webContents.openDevTools();
+      //   } else if (e.which === 116) {
+      //     location.reload();
+      //   }
+      // });
     </script>
+
+    
   </body>
 </html>

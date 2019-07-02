@@ -34,7 +34,6 @@ async function get_screenshot(image_name) {
 
 async function handleStream(stream, image_name) {
   const video = document.querySelector("video");
-  video.style.cssText = "position:absolute;top:-10000px;left:-10000px;";
   video.srcObject = stream;
 
   let loaded = false;

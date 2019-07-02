@@ -23,9 +23,9 @@ async function initialize() {
 }
 
 async function get_webview_region() {
-  document.getElementById('webview').style.borderColor = "rgb(0, 255, 0)"
+  document.getElementById('webview').style.borderColor = "rgba(0, 255, 0, 1)"
   await get_screenshot("screen.png");
-  document.getElementById('webview').style.borderColor = "rgb(0, 0, 0)"
+  document.getElementById('webview').style.borderColor = "rgb(0, 255, 0, 0)"
   let region = await spawn_python("get_webview_region");
   return region
 }
