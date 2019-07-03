@@ -123,15 +123,11 @@ async function click_img(str_template, { scale, webview_region, roi_region }) {
 }
 
 async function check_last_page(webview_data) {
-  let t0 = performance.now();
 
   await click_img("next", webview_data);
-  // await sleep(100);
   await get_screenshot("next_screen.png");
   let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
 
-  let t1 = performance.now();
-  console.log(`check_last_page took ${((t1 - t0) / 1000).toFixed(2)} seconds.`);
   return prob
 }
 
