@@ -61,13 +61,13 @@ def find_all_template_locations(str_template, scale, webview_region, roi_region=
 
 
 def check_last_page(webview_region, roi_region):
-    last_screen_webview = read_img('last_screen.png', webview_region)
-    last_screen_roi = crop_image(last_screen_webview, roi_region)
-
     screen_webview = read_img('screen.png', webview_region)
     screen_roi = crop_image(screen_webview, roi_region)
 
-    result = cv2.matchTemplate(screen_roi, last_screen_roi, cv2.TM_CCOEFF_NORMED)
+    next_screen_webview = read_img('next_screen.png', webview_region)
+    next_screen_roi = crop_image(next_screen_webview, roi_region)
+
+    result = cv2.matchTemplate(screen_roi, next_screen_roi, cv2.TM_CCOEFF_NORMED)
     _, prob, _, _ = cv2.minMaxLoc(result)
 
     return prob

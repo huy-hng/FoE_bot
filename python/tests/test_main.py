@@ -105,14 +105,18 @@ def test_find_all_template_locations():
       
     main.show_img(roi)
 
-# def test_check_last_page():
-#   prob = main.check_last_page()
-#   print(prob)
+@timer
+def test_check_last_page():
+  webview_region = [4, 1283, 34, 753]
+  roi_region = [225, 933, 556, 719]
+  prob = main.check_last_page(webview_region, roi_region)
+  print(prob)
 #endregion
 
 
 if __name__ == '__main__':
   # test_initialization_logged_in_and_ready()
   # test_find_all_template_locations()
-  test_find_template()
+  # test_find_template()
+  test_check_last_page()
   

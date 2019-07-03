@@ -8,7 +8,7 @@ const initializer = require("./initialize")
 
 async function initialize() {
   let webview_data = await initializer();
-  console.log(webview_data);
+  // console.log(webview_data);
   if (webview_data.message) {
     console.log(webview_data.message);
     return false;
@@ -73,8 +73,13 @@ async function click_all_images(tab, str_template, webview_data) {
     await sleep(2000);
     let last_page_prob = 0;
     while (last_page_prob < 0.9) {
-      await click_images_in_page(str_template, webview_data);
-      last_page_prob = await check_last_page(webview_data);
+      let loop_count = await click_images_in_page(str_template, webview_data);
+
+      if (loop_count < 2) {
+        last_page_prob = await check_last_page(webview_data);
+      } else {
+        await click_img("next", webview_data);
+      }
       
 
       await should_pause();
@@ -89,6 +94,7 @@ async function click_all_images(tab, str_template, webview_data) {
 async function click_images_in_page(str_template, webview_data) {
 
   let help_prob = 1;
+  let loop_count = 0;
   while (help_prob > 0.8) {
 
     help_prob = await click_img(str_template, webview_data);
@@ -98,8 +104,11 @@ async function click_images_in_page(str_template, webview_data) {
     if (stop) {
       break
     }
+
+    loop_count++;
   }
   console.log('Page finished.');
+  return loop_count;
 }
 
 async function click_img(str_template, { scale, webview_region, roi_region }) {
@@ -114,11 +123,15 @@ async function click_img(str_template, { scale, webview_region, roi_region }) {
 }
 
 async function check_last_page(webview_data) {
-  await get_screenshot("last_screen.png");
+  let t0 = performance.now();
+
   await click_img("next", webview_data);
-  await sleep(500);
-  await get_screenshot("screen.png");
+  // await sleep(100);
+  await get_screenshot("next_screen.png");
   let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
+
+  let t1 = performance.now();
+  console.log(`check_last_page took ${((t1 - t0) / 1000).toFixed(2)} seconds.`);
   return prob
 }
 
@@ -128,7 +141,8 @@ async function timer(fn, ...args) {
   let t0 = performance.now();
   output = await fn(args);
   let t1 = performance.now();
-  console.log(`${fn.name} took ${(t1 - t0 / 1000).toFixed(2)} seconds.`);
+  // console.log(`${fn.name} took ${t1 - t0} seconds.`);
+  console.log(`${fn.name} took ${((t1 - t0) / 1000).toFixed(2)} seconds.`);
   return output
 }
 //endregion

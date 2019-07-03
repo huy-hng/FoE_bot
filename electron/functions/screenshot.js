@@ -36,7 +36,7 @@ async function handleStream(stream, image_name) {
   const video = document.querySelector("video");
   video.srcObject = stream;
 
-  let loaded = false;
+  let loading = true;
   video.onloadedmetadata = async () => {
     video.play();
     video.pause();
@@ -51,10 +51,10 @@ async function handleStream(stream, image_name) {
     let byte_img = canvas.toDataURL().split(",");
 
     await save_img(byte_img[1], image_name);
-    loaded = true;
+    loading = false;
   };
 
-  while (!loaded) {
+  while (loading) {
     await sleep(10);
   }
 }
