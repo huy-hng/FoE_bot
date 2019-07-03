@@ -1,3 +1,4 @@
 python/dist/
 python/build/
-*.png
+electron/screen.png
+electron/last_screen.png
