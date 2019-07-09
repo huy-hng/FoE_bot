@@ -2,3 +2,4 @@ python/dist/
 python/build/
 electron/screen.png
 electron/next_screen.png
+electron/release-builds

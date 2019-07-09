@@ -7,17 +7,19 @@ let uint8arrayToString = data => {
 
 async function spawn_python(script, ...args) {
   const spawn = require("child_process").spawn;
-  // const scriptExecution = spawn(
-  //   path.join(__dirname, "/../python/dist/main/main.exe"),
-  //   ["args"]
-  // );
 
+  let scriptExecution;
+  if (process.env.NODE_ENV == 'production') {
+    scriptExecution = spawn(path.join(__dirname, "/../../python/dist/main/main.exe"), 
+      [script, JSON.stringify(args)]);
+  } else {
+    scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
+      path.join(__dirname, `../../python/main.py`),
+      script,
+      JSON.stringify(args)
+    ]);
+  }
   // console.log(`Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`);
-  const scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
-    path.join(__dirname, `../../python/main.py`),
-    script,
-    JSON.stringify(args)
-  ]);
 
   let python_return = "";
   let finished_python = false;

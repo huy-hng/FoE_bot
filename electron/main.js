@@ -13,6 +13,7 @@ const { Menu, MenuItem } = require('electron')
 //   hardResetMethod: 'exit',
 // });
 
+process.env.NODE_ENV = 'production'
 
 function createWindow() {
   let win = new BrowserWindow({
