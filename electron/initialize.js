@@ -1,22 +1,25 @@
 const get_screenshot = require("./functions/screenshot");
 const spawn_python = require("./functions/spawn_python");
 
-
+const Logging = require("./functions/logging");
+const logging = new Logging('initialize');
 
 async function initialize() {
+  logger = logging.get_logger('main', 'debug', true, true)
+
   let webview_region = await get_webview_region();
-  // console.log('webview_region', webview_region);
+  logger.info('webview_region', webview_region)
   let scale = await get_scale_and_check_logged_in(webview_region)
-  // console.log('scale', scale);
+  logger.info('scale', scale)
   
   let roi_region;
   let message;
   if (scale) {
     roi_region = await get_roi_region(scale, webview_region)
-    // console.log('roi_region', roi_region);
+    logger.info('roi_region', roi_region)
   } else {
     message = 'You need to log in.'
-    // console.log('message', message);
+    logger.info('message', message)
   }
 
   return { scale, webview_region, roi_region, message}

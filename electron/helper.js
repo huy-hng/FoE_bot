@@ -4,11 +4,15 @@ const spawn_python = require("./functions/spawn_python");
 const mouse_press = require("./functions/mouse_press");
 const get_screenshot = require("./functions/screenshot");
 const sleep = require("./functions/sleep");
+const Logging = require("./functions/logging");
 const initializer = require("./initialize")
 
+const logging = new Logging('helper')
+
 async function initialize() {
+  let logger = logging.get_logger('initialize', 'debug', true, true)
   let webview_data = await initializer();
-  // console.log(webview_data);
+  logger.debug('webview_data', webview_data)
   if (webview_data.message) {
     console.log(webview_data.message);
     return false;

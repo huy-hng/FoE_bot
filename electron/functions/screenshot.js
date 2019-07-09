@@ -1,8 +1,13 @@
 const { desktopCapturer } = require("electron");
 
 const sleep = require("./sleep");
+const Logging = require("./logging");
+const logging = new Logging('get_screenshot');
 
 async function get_screenshot(image_name) {
+  logger = logging.get_logger('main', 'debug', true, true)
+  let t0 = performance.now();
+
   await desktopCapturer
     .getSources({ types: ["window"] })
     .then(async sources => {
@@ -30,9 +35,13 @@ async function get_screenshot(image_name) {
         }
       }
     });
+
+  let t1 = performance.now();
+  logger.info(`Screenshot took ${((t1 - t0) / 1000).toFixed(2)} seconds.`)
 }
 
 async function handleStream(stream, image_name) {
+
   const video = document.querySelector("video");
   video.srcObject = stream;
 
