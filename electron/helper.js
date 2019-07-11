@@ -116,9 +116,10 @@ async function click_images_in_page(str_template, webview_data) {
 }
 
 async function click_img(str_template, { scale, webview_region, roi_region }) {
+  let logger = logging.get_logger('click_img', 'info')
   await get_screenshot("screen.png");
   let { prob, coord } = await spawn_python("find_template", str_template, scale, webview_region, roi_region);
-  // console.log(str_template, prob, coord)
+  logger.debug(str_template, prob, coord)
   if (prob > 0.8) {
     await mouse_press(coord);
   }

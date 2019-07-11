@@ -5,7 +5,7 @@ const Logging = require("./logging");
 const logging = new Logging('get_screenshot');
 
 async function get_screenshot(image_name) {
-  logger = logging.get_logger('main', 'debug', true, true)
+  logger_screenshot = logging.get_logger('get_screenshot', 'debug')
   let t0 = performance.now();
 
   await desktopCapturer
@@ -29,7 +29,7 @@ async function get_screenshot(image_name) {
             });
             await handleStream(stream, image_name);
           } catch (e) {
-            handleError(e);
+            logger_screenshot.error(e)
           }
           return;
         }
@@ -37,7 +37,7 @@ async function get_screenshot(image_name) {
     });
 
   let t1 = performance.now();
-  logger.info(`Screenshot took ${((t1 - t0) / 1000).toFixed(2)} seconds.`)
+  logger_screenshot.info(`Screenshot took ${((t1 - t0) / 1000).toFixed(2)} seconds.`)
 }
 
 async function handleStream(stream, image_name) {
@@ -66,10 +66,6 @@ async function handleStream(stream, image_name) {
   while (loading) {
     await sleep(10);
   }
-}
-
-function handleError(e) {
-  console.log(e);
 }
 
 async function save_img(base64str, image_name) {

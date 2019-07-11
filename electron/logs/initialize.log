@@ -1,0 +1,21 @@
+INFO  21:29:47:107  initialize: webview_region,4,885,14,1063
+INFO  21:29:50:196  initialize: scale,false
+INFO  21:29:50:196  initialize: message,You need to log in.
+INFO  21:30:47:683  main: webview_region,4,885,34,1043
+INFO  21:30:53:417  main: scale,false
+INFO  21:30:53:418  main: message,You need to log in.
+INFO  21:31:20:811  main: webview_region,4,1513,34,1043
+INFO  21:31:22:576  main: scale,1.0222222222222221
+INFO  21:31:23:850  main: roi_region,225,933,845,1009
+INFO  21:31:39:401  main: webview_region,4,955,34,1043
+INFO  21:31:40:824  main: scale,1.0222222222222221
+INFO  21:31:41:793  main: roi_region,225,933,845,1009
+INFO  21:34:26:373  main: webview_region,4,955,14,1063
+INFO  21:34:27:840  main: scale,1.0222222222222221
+INFO  21:34:28:787  main: roi_region,225,933,885,1049
+INFO  22:06:50:793  main: webview_region,4,1513,34,1043
+INFO  22:06:52:402  main: scale,1.0222222222222221
+INFO  22:06:53:535  main: roi_region,225,933,845,1009
+INFO  22:08:56:245  main: webview_region,4,1513,34,1043
+INFO  22:08:57:883  main: scale,1.0222222222222221
+INFO  22:08:59:700  main: roi_region,225,933,845,1009

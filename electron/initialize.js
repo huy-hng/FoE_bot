@@ -2,10 +2,10 @@ const get_screenshot = require("./functions/screenshot");
 const spawn_python = require("./functions/spawn_python");
 
 const Logging = require("./functions/logging");
-const logging = new Logging('initialize');
+const logging_initialize = new Logging('initialize');
 
 async function initialize() {
-  logger = logging.get_logger('main', 'debug', true, true)
+  logger = logging_initialize.get_logger('main', 'debug', true, true)
 
   let webview_region = await get_webview_region();
   logger.info('webview_region', webview_region)

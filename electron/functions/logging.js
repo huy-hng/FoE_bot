@@ -7,7 +7,7 @@ class Logging {
   }
 
 
-  get_logger(name, level = 'debug', log_to_console = true, log_to_file = false) {
+  get_logger(name, level = 'debug', log_to_console = false, log_to_file = true) {
     if (!this.loggers.hasOwnProperty(name)) {
       let logger_info = {
         module_name: this.module_name,
@@ -53,13 +53,13 @@ class Logger {
     let message = args.join(' ')
     let console_log = padded_level + time + `${this.module_name}:${this.name}: ` + message
     let file_log = padded_level + time + `${this.name}: ` + message
-
+    
     return { console_log, file_log }
   }
   log(level, ...args) {
-
+    
     let { console_log, file_log } = this.get_message(level, args);
-
+    
     if (this.console) console.log(console_log);
     if (this.file) this.write_to_file(file_log)
   }
@@ -79,11 +79,11 @@ class Logger {
     return time.padEnd(14, ' ')
   }
 
-  debug(...args) { if (this.level <= this.levels.debug) this.log('DEBUG', ...args) }
-  info(...args) { if (this.level <= this.levels.info) this.log('INFO', ...args) }
-  warning(...args) { if (this.level <= this.levels.warning) this.log('WARN', ...args) }
-  error(...args) { if (this.level <= this.levels.error) this.log('ERROR', ...args) }
-  // critical(...args) { if (this.level <= this.levels.critical) this.log('critical', ...args) }
+  debug(...args) { if (this.level <= this.levels.debug) this.log('DEBUG', args) }
+  info(...args) { if (this.level <= this.levels.info) this.log('INFO', args) }
+  warning(...args) { if (this.level <= this.levels.warning) this.log('WARN', args) }
+  error(...args) { if (this.level <= this.levels.error) this.log('ERROR', args) }
+  // critical(...args) { if (this.level <= this.levels.critical) this.log('critical', args) }
 }
 
 module.exports = Logging;
