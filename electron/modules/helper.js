@@ -1,11 +1,9 @@
-// const Mousetrap = require('mousetrap');
-
 const spawn_python = require("./functions/spawn_python");
 const mouse_press = require("./functions/mouse_press");
 const get_screenshot = require("./functions/screenshot");
 const sleep = require("./functions/sleep");
 const Logging = require("./functions/logging");
-const initializer = require("./initialize")
+const initializer = require("./functions/initialize")
 
 const logging = new Logging('helper')
 
@@ -70,19 +68,21 @@ function show_buttons(show) {
 }
 
 async function click_all_images(tab, str_template, webview_data) {
+  let logger = logging.get_logger('click_all_images', 'info', true, true)
   
   if (webview_data) {
-    await click_img(tab, webview_data)
-    await click_img('first', webview_data);
+    await click_img(`helping/${tab}`, webview_data)
+    await click_img('navigation/first', webview_data);
     await sleep(2000);
     let last_page_prob = 0;
     while (last_page_prob < 0.9) {
-      let loop_count = await click_images_in_page(str_template, webview_data);
+      let loop_count = await click_images_in_page(`helping/${str_template}`, webview_data);
+      logger.debug('loop_count', loop_count)
 
       if (loop_count < 2) {
         last_page_prob = await check_last_page(webview_data);
       } else {
-        await click_img("next", webview_data);
+        await click_img("navigation/next", webview_data);
       }
       
 
@@ -102,7 +102,6 @@ async function click_images_in_page(str_template, webview_data) {
   while (help_prob > 0.8) {
 
     help_prob = await click_img(str_template, webview_data);
-    // help_prob = await timer(click_img, str_template, webview_data);
 
     await should_pause();
     if (stop) {
@@ -129,7 +128,7 @@ async function click_img(str_template, { scale, webview_region, roi_region }) {
 
 async function check_last_page(webview_data) {
 
-  await click_img("next", webview_data);
+  await click_img("navigation/next", webview_data);
   await get_screenshot("next_screen.png");
   let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
 

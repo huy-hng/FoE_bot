@@ -1,7 +1,5 @@
 import sys
 import json
-import time
-from functools import wraps
 
 import cv2
 import numpy as np
@@ -14,7 +12,7 @@ def find_template(str_template, scale, webview_region, roi_region=None):
     if roi_region is not None:
         screen = crop_image(screen, roi_region)
 
-    template = cv2.imread(f'img/{str_template}.png')
+    template = cv2.imread(f'templates/{str_template}.png')
 
     template_resized = cv2.resize(template, None, fx=scale, fy=scale)
     height, width, _ = template_resized.shape
@@ -77,7 +75,7 @@ def check_last_page(webview_region, roi_region):
 #region initializer
 def get_webview_region(*_):
     """ Stand alone function """
-    screen = cv2.imread('screen.png')
+    screen = read_img('screen.png')
     # function: threshold green
     threshold_green = lambda screen: cv2.inRange(
         screen, 
@@ -169,7 +167,7 @@ def create_debugger(should_print):
 
 
 def read_img(name='screen.png', region=None):
-    screen = cv2.imread(name)
+    screen = cv2.imread(f'temp/{name}')
     if region is not None:
         screen = crop_image(screen, region)
     return screen

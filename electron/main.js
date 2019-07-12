@@ -5,13 +5,13 @@ const { app, BrowserWindow } = require("electron");
 
 const { Menu, MenuItem } = require('electron')
 
-// require("electron-reload")(__dirname, {
-//   electron: require(`${__dirname}/node_modules/electron`),
-//   ignored: /.png/,
-//   // ignored: /screen.png|index.html/,
-//   argv: [],
-//   hardResetMethod: 'exit',
-// });
+require("electron-reload")(__dirname, {
+  electron: require(`${__dirname}/node_modules/electron`),
+  ignored: /.png|.log/,
+  // ignored: /screen.png|index.html/,
+  argv: [],
+  hardResetMethod: 'exit',
+});
 
 process.env.NODE_ENV = 'production'
 

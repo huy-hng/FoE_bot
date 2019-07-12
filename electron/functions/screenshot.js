@@ -74,7 +74,7 @@ async function save_img(base64str, image_name) {
 
   let buf = Buffer.from(base64str, "base64");
 
-  await fs.writeFile(image_name, buf, err => {
+  await fs.writeFile(`temp/${image_name}`, buf, err => {
     if (err) {
       return console.log(err);
     }

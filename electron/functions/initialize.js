@@ -1,7 +1,7 @@
-const get_screenshot = require("./functions/screenshot");
-const spawn_python = require("./functions/spawn_python");
+const get_screenshot = require("./screenshot");
+const spawn_python = require("./spawn_python");
 
-const Logging = require("./functions/logging");
+const Logging = require("./logging");
 const logging_initialize = new Logging('initialize');
 
 async function initialize() {
@@ -38,7 +38,7 @@ async function get_scale_and_check_logged_in(webview_region) {
   if (data.result === true) {
     return data.scale;
   } else if (data.result == 'press arrow_up') {
-    let data = await spawn_python("find_template", 'arrow_up', data.scale, webview_region);
+    let data = await spawn_python("find_template", 'navigation/up', data.scale, webview_region);
     return data.scale;
   } else {
     return false;
