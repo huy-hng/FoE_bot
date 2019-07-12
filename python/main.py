@@ -14,7 +14,10 @@ def find_template(str_template, scale, webview_region, roi_region=None):
 
     template = cv2.imread(f'templates/{str_template}.png')
 
-    template_resized = cv2.resize(template, None, fx=scale, fy=scale)
+    try:
+        template_resized = cv2.resize(template, None, fx=scale, fy=scale)
+    except Exception as e:
+        error('find_template error', str_template, scale, webview_region)
     height, width, _ = template_resized.shape
 
     result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
@@ -47,7 +50,7 @@ def find_all_template_locations(str_template, scale, webview_region, roi_region=
 
     result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
     loc = np.where(result >= 0.8)
-    # print(result)
+    debug(result)
     coords = []
     for pt in zip(*loc[::-1]):
         coords.append([int(pt[0] + width / 2), int(pt[1] + height / 2)])
@@ -117,13 +120,13 @@ def get_scale_and_check_logged_in(webview_region):
 
         return highest_prob_data
 
-    arrow_down_data = loop_through_scales('arrow_down')
+    arrow_down_data = loop_through_scales('navigation/down')
     debug(arrow_down_data)
     if arrow_down_data[0] > 0.8:
         # logged in and ready
         return {'result': True, 'scale': arrow_down_data[1]}
 
-    arrow_up_data = loop_through_scales('arrow_up')
+    arrow_up_data = loop_through_scales('navigation/up')
     debug(arrow_up_data)
     if arrow_up_data[0] > 0.8:
         # logged in but not ready
@@ -140,9 +143,9 @@ def get_roi_region(scale, webview_region):
         coords starts at 4/34 in absolute scale """
 
     scale = float(scale)
-    loc_guild = find_template('guild', scale, webview_region)['coord']
-    loc_prev = find_template('previous', scale, webview_region)['coord']
-    loc_next = find_template('next', scale, webview_region)['coord']
+    loc_guild = find_template('helping/guild', scale, webview_region)['coord']
+    loc_prev = find_template('navigation/previous', scale, webview_region)['coord']
+    loc_next = find_template('navigation/next', scale, webview_region)['coord']
 
     roi_region = [
         loc_prev[0] - 20,
@@ -150,20 +153,27 @@ def get_roi_region(scale, webview_region):
         loc_guild[1] - 20,
         webview_region[3] - webview_region[2]
     ]
-
-    # screen = read_img(region=roi_region)
-    # show_img(screen)
     return roi_region
 #endregion
 
 
+#region logging
+def debug(*args):
+    print('DEBUG:', *args)
+
+def info(*args):
+    print('INFO:', *args)
+
+def warn(*args):
+    print('WARN:', *args)
+
+
+def error(*args):
+    print('ERROR:', *args)
+#endregion
 
 #region helpers
-def create_debugger(should_print):
-    def debug(*args):
-        if should_print:
-            print('debug:', *args)
-    return debug
+
 
 
 def read_img(name='screen.png', region=None):
@@ -197,15 +207,13 @@ def show_images(*images):
     cv2.destroyAllWindows()
 #endregion helpers
 
-debug = create_debugger(False)
 if __name__ == '__main__':
     script = sys.argv[1]
     args = sys.argv[2]
     args = json.loads(args)
 
-    # debug(*args)
+    info(f'script: {script} with args: {args}', )
 
     #pylint: disable=E0602
     exec(f'data = {script}(*{args})')
-    debug(data)
     print(json.dumps(data))

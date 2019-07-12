@@ -28,10 +28,14 @@ async function spawn_python(script, ...args) {
     let output = uint8arrayToString(data);
     let lines = output.split('\n')
 
+    let logging_level = 20
     for (let line of lines) {
-      if (line.substring(0, 7) === 'debug: ') { console.log(line) }
+      if (line.substring(0, 7) === 'DEBUG: ' && logging_level <= 10) console.log('Python: ', line)
+      else if (line.substring(0, 6) === 'INFO: ' && logging_level <= 20) console.log('Python: ', line)
+      else if (line.substring(0, 6) === 'WARN: ' && logging_level <= 30) console.log('Python: ', line)
+      else if (line.substring(0, 7) === 'ERROR: ' && logging_level <= 40) console.log('Python: ', line)
       else if (line.length == 0) {}
-      else { python_return = line }
+      else python_return = line
     }
     // console.log(python_return);
   });
@@ -39,7 +43,7 @@ async function spawn_python(script, ...args) {
   // handle error
   scriptExecution.stderr.on("data", data => {
     console.log(uint8arrayToString(data));
-    throw 'Python error';
+    throw 'Python Error';
   });
 
   //#region wait for finish
@@ -55,7 +59,8 @@ async function spawn_python(script, ...args) {
   try {
     return JSON.parse(python_return);
   } catch {
-    console.log('Unable to parse JSON from python.')
+    console.log(python_return)
+    throw 'Unable to parse JSON from python.'
   }
 }
 

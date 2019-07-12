@@ -8,7 +8,7 @@ const initializer = require("./functions/initialize")
 const logging = new Logging('helper')
 
 async function initialize() {
-  let logger = logging.get_logger('initialize', 'debug', true, true)
+  let logger = logging.get_logger('initialize', 'info', true, true)
   let webview_data = await initializer();
   logger.debug('webview_data', webview_data)
   if (webview_data.message) {

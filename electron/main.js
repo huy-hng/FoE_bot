@@ -13,7 +13,7 @@ require("electron-reload")(__dirname, {
   hardResetMethod: 'exit',
 });
 
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'development'
 
 function createWindow() {
   let win = new BrowserWindow({

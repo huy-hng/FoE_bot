@@ -5,21 +5,21 @@ const Logging = require("./logging");
 const logging_initialize = new Logging('initialize');
 
 async function initialize() {
-  logger = logging_initialize.get_logger('main', 'debug', true, true)
+  logger = logging_initialize.get_logger('main', 'info', true, true)
 
   let webview_region = await get_webview_region();
-  logger.info('webview_region', webview_region)
+  logger.debug('webview_region', webview_region)
   let scale = await get_scale_and_check_logged_in(webview_region)
-  logger.info('scale', scale)
+  logger.debug('scale', scale)
   
   let roi_region;
   let message;
   if (scale) {
     roi_region = await get_roi_region(scale, webview_region)
-    logger.info('roi_region', roi_region)
+    logger.debug('roi_region', roi_region)
   } else {
     message = 'You need to log in.'
-    logger.info('message', message)
+    logger.debug('message', message)
   }
 
   return { scale, webview_region, roi_region, message}
