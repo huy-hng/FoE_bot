@@ -20,11 +20,19 @@ async function initialize() {
   return coords
 }
 
+
+async function check_build_mode() {
+  await get_screenshot();
+  let { prob, coord } = await spawn_python("find_template", button, scale, webview_region, roi_region);
+
+  
+}
+
 async function get_button_coords({ scale, webview_region, roi_region }) {
   let logger = logging.get_logger('button_coords', 'info')
   await get_screenshot("screen.png");
   
-  let button_names = ['sell_button', 'move_button']
+  let button_names = ['building/sell', 'building/move']
   let button_coords = {}
   for (let button of button_names) {
     let { prob, coord } = await spawn_python("find_template", button, scale, webview_region, roi_region);

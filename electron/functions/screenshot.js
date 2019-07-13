@@ -4,7 +4,7 @@ const sleep = require("./sleep");
 const Logging = require("./logging");
 const logging = new Logging('get_screenshot');
 
-async function get_screenshot(image_name) {
+async function get_screenshot(image_name='screen.png') {
   logger_screenshot = logging.get_logger('get_screenshot', 'debug')
   let t0 = performance.now();
 
