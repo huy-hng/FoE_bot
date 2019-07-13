@@ -16,12 +16,12 @@ def find_template(str_template, scale, webview_region, roi_region=None):
 
     try:
         template_resized = cv2.resize(template, None, fx=scale, fy=scale)
+        height, width, _ = template_resized.shape
+
+        result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
+        _, prob, _, loc = cv2.minMaxLoc(result)
     except Exception as e:
         error('find_template error', str_template, scale, webview_region)
-    height, width, _ = template_resized.shape
-
-    result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
-    _, prob, _, loc = cv2.minMaxLoc(result)
 
     coord = [int(loc[0] + width  / 2),
              int(loc[1] + height / 2)]
@@ -103,38 +103,22 @@ def get_webview_region(*_):
 
 
 def get_scale_and_check_logged_in(webview_region):
-    def loop_through_scales(str_template):
-        arrow_prob = []
-        for scale in np.linspace(0.8, 1.2, 10)[::-1]:
-            data = find_template(str_template, scale, webview_region)
-            prob = data['prob']
-            if prob > 0.9:
-                return [prob, scale]
-            elif prob > 0.8:
-                arrow_prob.append([prob, scale])
+    in_game_prob = []
+    for scale in np.linspace(0.8, 1.2, 10)[::-1]:
+        # loop through various scales to get probability
+        data = find_template('in_game', scale, webview_region)
+        prob = data['prob']
+        if prob > 0.9:
+            in_game_prob.append([prob, scale])
+            break
+        elif prob > 0.8:
+            in_game_prob.append([prob, scale])
 
-        highest_prob_data = [0, 0]
-        if arrow_prob:
-            highest_prob_data = sorted(
-                arrow_prob, key=lambda x: x[0], reverse=True)[0]
+    if in_game_prob:
+        scale = sorted(in_game_prob, key=lambda x: x[0], reverse=True)[0][1]
+        return scale
+    return None
 
-        return highest_prob_data
-
-    arrow_down_data = loop_through_scales('navigation/down')
-    debug(arrow_down_data)
-    if arrow_down_data[0] > 0.8:
-        # logged in and ready
-        return {'result': True, 'scale': arrow_down_data[1]}
-
-    arrow_up_data = loop_through_scales('navigation/up')
-    debug(arrow_up_data)
-    if arrow_up_data[0] > 0.8:
-        # logged in but not ready
-        return {'result': 'press arrow_up',
-                'scale': arrow_up_data[1]}
-
-    # not logged in
-    return {'result': False}
 
 
 def get_roi_region(scale, webview_region):
@@ -154,6 +138,18 @@ def get_roi_region(scale, webview_region):
         webview_region[3] - webview_region[2]
     ]
     return roi_region
+
+def check_roi_on_screen(scale, webview_region):
+    prob_down = find_template('navigation/down', scale, webview_region)['prob']
+    if prob_down > 0.8:
+        return 1
+
+    prob_up = find_template('navigation/up', scale, webview_region)['prob']
+    if prob_up > 0.8:
+        return 0.5
+
+    return 0
+
 #endregion
 
 

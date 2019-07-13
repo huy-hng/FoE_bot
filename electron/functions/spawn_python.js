@@ -28,7 +28,7 @@ async function spawn_python(script, ...args) {
     let output = uint8arrayToString(data);
     let lines = output.split('\n')
 
-    let logging_level = 20
+    let logging_level = 30
     for (let line of lines) {
       if (line.substring(0, 7) === 'DEBUG: ' && logging_level <= 10) console.log('Python: ', line)
       else if (line.substring(0, 6) === 'INFO: ' && logging_level <= 20) console.log('Python: ', line)

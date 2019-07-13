@@ -51,13 +51,12 @@ class Logger {
     let padded_level = level.padEnd(6, ' ')
     let time = this.get_time()
     let message = args.join(' ')
-    let console_log = padded_level + time + `${this.module_name}:${this.name}: ` + message
+    let console_log = padded_level + time + `${this.module_name}: ${this.name}: ` + message
     let file_log = padded_level + time + `${this.name}: ` + message
     
     return { console_log, file_log }
   }
   log(level, ...args) {
-    
     let { console_log, file_log } = this.get_message(level, args);
     
     if (this.console) console.log(console_log);

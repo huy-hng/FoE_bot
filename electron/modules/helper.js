@@ -20,6 +20,7 @@ async function initialize() {
 
 
 async function start() {
+  let logger = logging.get_logger('start', 'info', true, true)
 
   const webview_data = await initialize();
 
@@ -34,21 +35,22 @@ async function start() {
         let tab = str.split(' ')[0];
         let action = str.split(' ')[1];
 
-        console.log(action, tab);
+        logger.info(action, tab)
         
         await click_all_images(tab, action, webview_data);
   
         await should_pause();
         if (stop) {
           toggle_stop()
-          break
+          console.log('Stopped')
+          show_buttons(false)
+          return
         }
       }
     }
   }
   console.log('Finished everything')
   show_buttons(false)
-
 }
 
 function show_buttons(show) {
@@ -88,7 +90,7 @@ async function click_all_images(tab, str_template, webview_data) {
 
       await should_pause();
       if (stop) {
-        break
+        return
       }
     }
     console.log('Finished task');
@@ -105,7 +107,7 @@ async function click_images_in_page(str_template, webview_data) {
 
     await should_pause();
     if (stop) {
-      break
+      return
     }
 
     loop_count++;
@@ -115,15 +117,12 @@ async function click_images_in_page(str_template, webview_data) {
 }
 
 async function click_img(str_template, { scale, webview_region, roi_region }) {
-  let logger = logging.get_logger('click_img', 'info')
+  let logger = logging.get_logger('click_img', 'debug')
   await get_screenshot("screen.png");
   let { prob, coord } = await spawn_python("find_template", str_template, scale, webview_region, roi_region);
   logger.debug(str_template, prob, coord)
-  if (prob > 0.8) {
-    await mouse_press(coord);
-  }
+  if (prob > 0.8) await mouse_press(coord)
   return prob;
-  
 }
 
 async function check_last_page(webview_data) {
@@ -156,7 +155,7 @@ function toggle_pause() {
 
 function toggle_stop() {
   stop = !stop;
-  console.log(stop)
+  if (stop) console.log('Stopping')
 }
 
 async function should_pause() {
