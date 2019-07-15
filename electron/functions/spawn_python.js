@@ -9,16 +9,18 @@ async function spawn_python(script, ...args) {
   const spawn = require("child_process").spawn;
 
   let scriptExecution;
-  if (process.env.NODE_ENV == 'production') {
-    scriptExecution = spawn(path.join(__dirname, "/../../python/dist/main/main.exe"), 
+  try {
+    scriptExecution = spawn(path.join(__dirname, "/../../python/main.exe"),
       [script, JSON.stringify(args)]);
-  } else {
+  } catch (e) {
+    console.log('Runnin in development mode')
     scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
       path.join(__dirname, `../../python/main.py`),
       script,
       JSON.stringify(args)
     ]);
   }
+
   // console.log(`Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`);
 
   let python_return = "";
