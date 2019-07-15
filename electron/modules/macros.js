@@ -21,14 +21,7 @@ async function initialize() {
 }
 
 
-async function check_build_mode() {
-  await get_screenshot();
-  let { prob, coord } = await spawn_python("find_template", button, scale, webview_region, roi_region);
-
-  
-}
-
-async function get_button_coords({ scale, webview_region, roi_region }) {
+async function get_building_button_coords({ scale, webview_region, roi_region }) {
   let logger = logging.get_logger('button_coords', 'info')
   await get_screenshot("screen.png");
   
@@ -38,6 +31,8 @@ async function get_button_coords({ scale, webview_region, roi_region }) {
     let { prob, coord } = await spawn_python("find_template", button, scale, webview_region, roi_region);
     if (prob > 0.8) {
       button_coords[button] = coord;
+    } else {
+      return 'Not in building mode'
     }
   }
 

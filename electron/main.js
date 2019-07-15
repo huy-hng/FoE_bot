@@ -1,9 +1,10 @@
 const path = require("path");
 const url = require("url");
 
-const { app, BrowserWindow } = require("electron");
+const electron = require('electron');
+const { app, BrowserWindow } = electron;
 
-const { Menu, MenuItem } = require('electron')
+const { Menu, MenuItem } = electron;
 
 // require("electron-reload")(__dirname, {
 //   electron: require(`${__dirname}/node_modules/electron`),
