@@ -1,6 +1,6 @@
 const { desktopCapturer } = require("electron");
 
-const sleep = require("./sleep");
+const helpers = require("./helpers");
 const Logging = require("./logging");
 const logging = new Logging('get_screenshot');
 
@@ -64,7 +64,7 @@ async function handleStream(stream, image_name) {
   };
 
   while (loading) {
-    await sleep(10);
+    await helpers.sleep(10);
   }
 }
 
