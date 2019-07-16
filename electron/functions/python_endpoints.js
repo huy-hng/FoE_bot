@@ -5,7 +5,8 @@ exports.find_template = async function (str_template, scale, webview_region, roi
   return { prob, coord }
 }
 
-exports.check_last_page = async function (webview_region, roi_region) {
+exports.check_last_page = async function (webview_data) {
+  let { webview_region, roi_region } = webview_data;
   let prob = await spawn_python("check_last_page", webview_region, roi_region);
   return prob
 }

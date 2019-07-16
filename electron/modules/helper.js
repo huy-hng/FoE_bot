@@ -81,7 +81,7 @@ async function click_all_images(tab, str_template, webview_data) {
     logger.debug('loop_count', loop_count)
 
     if (loop_count < 2) {
-      last_page_prob = await python.check_last_page(webview_data);
+      last_page_prob = await check_last_page(webview_data);
     } else {
       await helpers.click_img("navigation/next", webview_data);
     }
@@ -120,7 +120,7 @@ async function check_last_page(webview_data) {
   await helpers.click_img("navigation/next", webview_data);
   await get_screenshot("next_screen.png");
   // let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
-  let prob = await check_last_page(webview_data)
+  let prob = await python.check_last_page(webview_data)
 
   return prob
 }

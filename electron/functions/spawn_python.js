@@ -13,8 +13,8 @@ async function spawn_python(script, ...args) {
   let logger = logging.get_logger('main', 'WARN', true, true)
 
   const spawn = require("child_process").spawn;
+  logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
 
-  logger.debug('Spawning python instance');
   let scriptExecution;
   if (process.env.NODE_ENV == 'p') {
     scriptExecution = await spawn(path.join(__dirname, "/../../python/main.exe"), 
@@ -30,7 +30,6 @@ async function spawn_python(script, ...args) {
     ]);
   }
 
-  logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
 
   let python_return = "";
   let finished_python = false;
