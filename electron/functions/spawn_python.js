@@ -1,19 +1,28 @@
 const path = require("path");
-const sleep = require("./sleep");
+const helpers = require("./helpers");
+const Logging = require("./logging");
+
+const logging = new Logging('spawn_python')
+
 
 let uint8arrayToString = data => {
   return String.fromCharCode.apply(null, data);
 };
 
 async function spawn_python(script, ...args) {
+  let logger = logging.get_logger('main', 'WARN', true, true)
+
   const spawn = require("child_process").spawn;
 
+  logger.debug('Spawning python instance');
   let scriptExecution;
-  try {
-    scriptExecution = spawn(path.join(__dirname, "/../../python/main.exe"),
+  if (process.env.NODE_ENV == 'p') {
+    scriptExecution = await spawn(path.join(__dirname, "/../../python/main.exe"), 
       [script, JSON.stringify(args)]);
-  } catch (e) {
-    console.log('Runnin in development mode')
+
+  } else {
+    logger.info('Running in development mode');
+    
     scriptExecution = await spawn("C:\\Python\\Python37\\python.exe", [
       path.join(__dirname, `../../python/main.py`),
       script,
@@ -21,7 +30,7 @@ async function spawn_python(script, ...args) {
     ]);
   }
 
-  // console.log(`Spawning Python function: ${script}, with args: ${JSON.stringify(args)}`);
+  logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
 
   let python_return = "";
   let finished_python = false;
@@ -39,29 +48,29 @@ async function spawn_python(script, ...args) {
       else if (line.length == 0) {}
       else python_return = line
     }
-    // console.log(python_return);
   });
 
   // handle error
   scriptExecution.stderr.on("data", data => {
-    console.log(uint8arrayToString(data));
+    logger.error(uint8arrayToString(data));
     throw 'Python Error';
   });
 
   //#region wait for finish
   scriptExecution.on("exit", code => {
-    // console.log("Python Process quit with code : " + code);
     finished_python = true;
+    logger.info('Python Process quit with code:', code);
   });
   while (!finished_python) {
-    await sleep(10);
+    await helpers.sleep(10);
   }
   //#endregion
 
   try {
+    logger.debug('python_return:', python_return);
     return JSON.parse(python_return);
   } catch {
-    console.log(python_return)
+    logger.warn(python_return);
     throw 'Unable to parse JSON from python.'
   }
 }

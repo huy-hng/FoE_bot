@@ -1,7 +1,6 @@
-const spawn_python = require("./functions/spawn_python");
-const mouse_press = require("./functions/mouse_press");
+const python = require("./functions/python_endpoints")
+const helpers = require("./functions/helpers")
 const get_screenshot = require("./functions/screenshot");
-const sleep = require("./functions/sleep");
 const Logging = require("./functions/logging");
 const initializer = require("./functions/initialize")
 
@@ -71,30 +70,29 @@ function show_buttons(show) {
 
 async function click_all_images(tab, str_template, webview_data) {
   let logger = logging.get_logger('click_all_images', 'info', true, true)
+  logger.debug();
   
-  if (webview_data) {
-    await click_img(`helping/${tab}`, webview_data)
-    await click_img('navigation/first', webview_data);
-    await sleep(2000);
-    let last_page_prob = 0;
-    while (last_page_prob < 0.9) {
-      let loop_count = await click_images_in_page(`helping/${str_template}`, webview_data);
-      logger.debug('loop_count', loop_count)
+  await helpers.click_img(`helping/${tab}`, webview_data)
+  await helpers.click_img('navigation/first', webview_data);
+  await helpers.sleep(2000);
+  let last_page_prob = 0;
+  while (last_page_prob < 0.9) {
+    let loop_count = await click_images_in_page(`helping/${str_template}`, webview_data);
+    logger.debug('loop_count', loop_count)
 
-      if (loop_count < 2) {
-        last_page_prob = await check_last_page(webview_data);
-      } else {
-        await click_img("navigation/next", webview_data);
-      }
-      
-
-      await should_pause();
-      if (stop) {
-        return
-      }
+    if (loop_count < 2) {
+      last_page_prob = await python.check_last_page(webview_data);
+    } else {
+      await helpers.click_img("navigation/next", webview_data);
     }
-    console.log('Finished task');
+    
+
+    await should_pause();
+    if (stop) {
+      return
+    }
   }
+  console.log('Finished task');
 }
 
 async function click_images_in_page(str_template, webview_data) {
@@ -103,7 +101,7 @@ async function click_images_in_page(str_template, webview_data) {
   let loop_count = 0;
   while (help_prob > 0.8) {
 
-    help_prob = await click_img(str_template, webview_data);
+    help_prob = await helpers.click_img(str_template, webview_data);
 
     await should_pause();
     if (stop) {
@@ -116,20 +114,13 @@ async function click_images_in_page(str_template, webview_data) {
   return loop_count;
 }
 
-async function click_img(str_template, { scale, webview_region, roi_region }) {
-  let logger = logging.get_logger('click_img', 'debug')
-  await get_screenshot("screen.png");
-  let { prob, coord } = await spawn_python("find_template", str_template, scale, webview_region, roi_region);
-  logger.debug(str_template, prob, coord)
-  if (prob > 0.8) await mouse_press(coord)
-  return prob;
-}
 
 async function check_last_page(webview_data) {
 
-  await click_img("navigation/next", webview_data);
+  await helpers.click_img("navigation/next", webview_data);
   await get_screenshot("next_screen.png");
-  let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
+  // let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
+  let prob = await check_last_page(webview_data)
 
   return prob
 }
@@ -163,7 +154,7 @@ async function should_pause() {
     document.getElementById('pause_button').innerHTML = 'Unpause';
     console.log('Paused.');
     while (paused) {
-      await sleep(500);
+      await helpers.sleep(500);
       if (stop) {
         break
       }
