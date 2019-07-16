@@ -14,7 +14,7 @@ const { Menu, MenuItem } = electron;
 //   hardResetMethod: 'exit',
 // });
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'd'
 
 function createWindow() {
   let win = new BrowserWindow({
@@ -35,7 +35,8 @@ function createWindow() {
       slashes: true
     })
   );
-  win.webContents.openDevTools();
+
+  if (process.env.NODE_ENV == 'd') win.webContents.openDevTools();
 
   win.on("closed", () => {
     win = null;

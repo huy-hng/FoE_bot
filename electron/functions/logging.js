@@ -7,14 +7,13 @@ class Logging {
   }
 
 
-  get_logger(name, level = 'debug', log_to_console = false, log_to_file = true) {
+  get_logger(name, level = 'DEBUG', log_to_console = false) {
     if (!this.loggers.hasOwnProperty(name)) {
       let logger_info = {
         module_name: this.module_name,
         name,
         level,
         log_to_console,
-        log_to_file
       }
       let logger = new Logger(logger_info)
       this.loggers.name = logger
@@ -31,15 +30,14 @@ class Logger {
     let level = logger_info.level;
 
     this.console = logger_info.log_to_console
-    this.file = logger_info.log_to_file
 
     this.levels = {
-      notset: 0,
-      debug: 10,
-      info: 20,
-      warning: 30,
-      error: 40,
-      critical: 50
+      NOTSET: 0,
+      DEBUG: 10,
+      INFO: 20,
+      WARN: 30,
+      ERROR: 40,
+      CRITICAL: 50
     }
 
 
@@ -47,24 +45,47 @@ class Logger {
     else this.level = this.levels[level];
 
   }
-  get_message(level, ...args) {
-    let padded_level = level.padEnd(6, ' ')
-    let time = this.get_time()
-    let message = args.join(' ')
-    let console_log = padded_level + time + `${this.module_name}: ${this.name}: ` + message
-    let file_log = padded_level + time + `${this.name}: ` + message
-    
-    return { console_log, file_log }
-  }
-  log(level, ...args) {
+
+  debug(...args) { this.log('DEBUG', args) }
+  info(...args) { this.log('INFO', args) }
+  warn(...args) { this.log('WARN', args) }
+  error(...args) { this.log('ERROR', args) }
+
+  log(level, args) {
     let { console_log, file_log } = this.get_message(level, args);
-    
-    if (this.console) console.log(console_log);
-    if (this.file) this.write_to_file(file_log)
+
+    this.log_to_console(level, console_log);
+    this.log_to_file(this.module_name, file_log);
   }
 
-  write_to_file(message) {
-    fs.appendFile(`./logs/${this.module_name}.log`, message + '\n', err => {
+  get_message(level, args) {
+    let padded_level = level.padEnd(6, ' ')
+    let time = this.get_time()
+    let message = '';
+    for (let arg of args) {
+      if (typeof arg == 'object') {
+        message += JSON.stringify(arg) + ' ';
+      } else {
+        message += arg + ' ';
+      }
+    }
+    let console_log = padded_level + time + `${this.module_name}: ${this.name}: ` + message
+    let file_log = padded_level + time + `${this.name}: ` + message
+
+    return { console_log, file_log }
+  }
+
+  log_to_console(level, message) {
+    if (this.level <= this.levels[level]) {
+      if (this.console) console.log(message)
+
+      this.log_to_file('console', message) 
+    }
+    this.log_to_file('console_all', message) 
+  }
+
+  log_to_file(file_name, message) {
+    fs.appendFile(`./logs/${file_name}.log`, message + '\n', err => {
       if (err) throw console.log(err);
     })
   }
@@ -74,15 +95,9 @@ class Logger {
     let time = now.getHours().toString().padStart(2, '0') + ':' +
       now.getMinutes().toString().padStart(2, '0') + ':' +
       now.getSeconds().toString().padStart(2, '0') + ':' +
-      now.getMilliseconds().toString().padEnd(3, '0')
+      now.getMilliseconds().toString().padStart(3, '0')
     return time.padEnd(14, ' ')
   }
-
-  debug(...args) { if (this.level <= this.levels.debug) this.log('DEBUG', args) }
-  info(...args) { if (this.level <= this.levels.info) this.log('INFO', args) }
-  warning(...args) { if (this.level <= this.levels.warning) this.log('WARN', args) }
-  error(...args) { if (this.level <= this.levels.error) this.log('ERROR', args) }
-  // critical(...args) { if (this.level <= this.levels.critical) this.log('critical', args) }
 }
 
 module.exports = Logging;
@@ -90,15 +105,16 @@ module.exports = Logging;
 
 function test_logging() {
   logging = new Logging('my_module');
-  logger = logging.get_logger('my_logger', 'debug', log_to_console = true, log_to_file = true)
+  logger = logging.get_logger('my_logger', 'DEBUG', log_to_console = true)
 
-  logger.debug('debug message', 'second message', 'third message')
+  logger.debug('debug message', { asd: 'asd', erg: 'wef' }, [123, 651, 156, 1])
   logger.info('info message')
-  logger.warning('warning message')
+  logger.warn('warning message')
   logger.error('error message')
 
-  logger = logging.get_logger('my_logger 2', 'debug', log_to_console = true, log_to_file = true)
+  logger = logging.get_logger('my_logger 2', 'DEBUG', log_to_console = true)
 
   logger.debug('debug message', 'second message', 'third message')
-  // logger.critical('criticcal message')
 }
+
+// test_logging()
