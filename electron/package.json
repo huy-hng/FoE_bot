@@ -1,12 +1,13 @@
 {
   "name": "FoE_bot",
+  "productName": "Forge of Empires Bot",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
     "start": "electron . --disable-d3d11",
 
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . \"Forge of Empires Bot\" --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/Favicon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Forge of Empires Bot\"",
+    "package-win": "electron-packager . \"Forge of Empires Bot\" --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/Favicon.ico --prune=true --out=release-builds --version-string.CompanyName=Slay --version-string.FileDescription=Slay",
     "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 python/dist/
 python/build/
+python/tests/
 electron/temp
 electron/release-builds
 electron/logs
