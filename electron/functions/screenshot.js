@@ -5,7 +5,7 @@ const Logging = require("./logging");
 const logging = new Logging('get_screenshot');
 
 async function get_screenshot(image_name='screen.png') {
-  logger_screenshot = logging.get_logger('get_screenshot', 'debug')
+  logger_screenshot = logging.get_logger('get_screenshot', 'WARN')
   let t0 = performance.now();
 
   await desktopCapturer
@@ -14,19 +14,21 @@ async function get_screenshot(image_name='screen.png') {
       for (const source of sources) {
         if (source.name === "FoE Bot") {
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: false,
-              video: {
-                mandatory: {
-                  chromeMediaSource: "desktop",
-                  chromeMediaSourceId: source.id,
-                  minWidth: 1920,
-                  maxWidth: 1920,
-                  minHeight: 1080,
-                  maxHeight: 1080
+            const stream = await navigator.mediaDevices.getUserMedia(
+              {
+                audio: false,
+                video: {
+                  mandatory: {
+                    chromeMediaSource: "desktop",
+                    chromeMediaSourceId: source.id,
+                    minWidth: 1920,
+                    maxWidth: 1920,
+                    minHeight: 1080,
+                    maxHeight: 1080
+                  }
                 }
               }
-            });
+            );
             await handleStream(stream, image_name);
           } catch (e) {
             logger_screenshot.error(e)
