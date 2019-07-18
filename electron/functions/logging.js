@@ -64,7 +64,11 @@ class Logger {
     let message = '';
     for (let arg of args) {
       if (typeof arg == 'object') {
-        message += JSON.stringify(arg) + ' ';
+        try {
+          message += JSON.stringify(arg) + ' ';
+        } catch {
+          message += arg + " ";
+        }
       } else {
         message += arg + ' ';
       }
