@@ -9,30 +9,32 @@ import numpy as np
 def find_template(str_template, scale, webview_region, roi_region=None):
 
     screen = read_img(region=webview_region)
-    if roi_region is not None:
-        screen = crop_image(screen, roi_region)
+    # if roi_region is not None:
+    #     screen = crop_image(screen, roi_region)
 
     template = cv2.imread(f'templates/{str_template}.png')
 
     try:
+        webview_height, webview_width, _ = screen.shape
         template_resized = cv2.resize(template, None, fx=scale, fy=scale)
-        height, width, _ = template_resized.shape
+        template_height, template_width, _ = template_resized.shape
 
         result = cv2.matchTemplate(screen, template_resized, cv2.TM_CCOEFF_NORMED)
         _, prob, _, loc = cv2.minMaxLoc(result)
     except Exception as e:
         error('find_template error', str_template, scale, webview_region)
 
-    coord = [int(loc[0] + width  / 2),
-             int(loc[1] + height / 2)]
+    float_loc = [(loc[0] + template_width / 2) / webview_width,
+                 (loc[1] + template_height / 2) / webview_height]
 
-    if roi_region is not None:
-        coord[0] += roi_region[0]
-        coord[1] += roi_region[2]
+
+    # if roi_region is not None:
+    #     coord[0] += roi_region[0]
+    #     coord[1] += roi_region[2]
 
     data = {
         'prob': prob,
-        'coord': coord,
+        'coord': float_loc,
     }
     return data
 
@@ -99,6 +101,10 @@ def get_webview_region(*_):
     ymin = int(y_coords[0] + border_thickness)
     ymax = int(y_coords[-1] - border_thickness)
 
+    if debug:
+        cropped = crop_image(screen, [xmin, xmax, ymin, ymax])
+        cv2.imwrite('./temp/webview.png', cropped)
+
     return [xmin, xmax, ymin, ymax]
 
 
@@ -120,7 +126,6 @@ def get_scale_and_check_logged_in(webview_region):
     return None
 
 
-
 def get_roi_region(scale, webview_region):
     """ region within the webview, in other words
         relative to 0/0 of webview, eventhough webview
@@ -132,12 +137,15 @@ def get_roi_region(scale, webview_region):
     loc_next = find_template('navigation/next', scale, webview_region)['coord']
 
     roi_region = [
-        loc_prev[0] - 20,
-        loc_next[0] + 20,
-        loc_guild[1] - 20,
-        webview_region[3] - webview_region[2]
+        int(loc_prev[0] * webview_region[1] - 20),
+        int(loc_next[0] * webview_region[1] + 20),
+        int(loc_guild[1] * webview_region[3] - 20),
+        int(webview_region[3] - webview_region[2])
     ]
+
+    
     return roi_region
+
 
 def check_roi_on_screen(scale, webview_region):
     prob_down = find_template('navigation/down', scale, webview_region)['prob']
@@ -204,6 +212,7 @@ def show_images(*images):
 #endregion helpers
 
 if __name__ == '__main__':
+    debug = True
     script = sys.argv[1]
     args = sys.argv[2]
     args = json.loads(args)
