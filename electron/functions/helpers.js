@@ -6,7 +6,6 @@ const logging_helpers = new Logging('helpers');
 
 async function click_img(str_template, webview_data) {
   let logger = logging_helpers.get_logger('click_img', 'DEBUG')
-  logger.debug('args:', str_template, webview_data);
   await get_screenshot("screen.png");
   let { scale, webview_region, roi_region } = webview_data;
   let { prob, coord } = await python.find_template(str_template, scale, webview_region, roi_region)
@@ -15,10 +14,13 @@ async function click_img(str_template, webview_data) {
   return prob;
 }
 
+
+
 function mouse_press(coord) {
-  // let webview = document.getElementById('webview');
-  let x = coord[0];
-  let y = coord[1];
+  let webview = document.getElementById("webview");
+
+  let x = coord[0] * webview.clientWidth;
+  let y = coord[1] * webview.clientHeight;
 
   webview.sendInputEvent({
     type: "mouseDown",
