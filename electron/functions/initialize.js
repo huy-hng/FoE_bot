@@ -1,3 +1,4 @@
+const { remote } = require("electron");
 const get_screenshot = require("./screenshot");
 const python = require("./python_endpoints");
 const helpers = require("./helpers");
@@ -11,7 +12,6 @@ async function initialize() {
   logger.debug()
 
   let webview_region = await get_webview_region();
-
 
   let scale = await python.get_scale_and_check_logged_in(webview_region);
   logger.debug('scale', scale)
@@ -55,9 +55,7 @@ async function get_roi_region(scale, webview_region) {
     logger.info('waiting');  
     await helpers.sleep(2000);
     
-  } else if (roi_on_screen == 0) {
-    return 'something is wrong';
-  }
+  } else if (roi_on_screen == 0) return 'something is wrong'
   
   await get_screenshot("screen.png");
   let roi_region = await python.get_roi_region(scale, webview_region)
