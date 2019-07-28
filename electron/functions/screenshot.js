@@ -1,4 +1,4 @@
-const { desktopCapturer } = require("electron");
+const { desktopCapturer, remote } = require("electron");
 
 const helpers = require("./helpers");
 const Logging = require("./logging");
@@ -7,6 +7,12 @@ const logging = new Logging('get_screenshot');
 async function get_screenshot(image_name='screen.png') {
   logger_screenshot = logging.get_logger('get_screenshot', 'WARN')
   let t0 = performance.now();
+
+  let window_size = remote
+    .getCurrentWindow()
+    .webContents.getOwnerBrowserWindow()
+    .getBounds();
+
 
   await desktopCapturer
     .getSources({ types: ["window"] })
@@ -21,10 +27,10 @@ async function get_screenshot(image_name='screen.png') {
                   mandatory: {
                     chromeMediaSource: "desktop",
                     chromeMediaSourceId: source.id,
-                    minWidth: 1920,
-                    maxWidth: 1920,
-                    minHeight: 1080,
-                    maxHeight: 1080
+                    minWidth: window_size.width,
+                    maxWidth: window_size.width,
+                    minHeight: window_size.height,
+                    maxHeight: window_size.height
                   }
                 }
               }
