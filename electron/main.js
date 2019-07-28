@@ -14,7 +14,7 @@ const { Menu, MenuItem } = electron;
 //   hardResetMethod: 'exit',
 // });
 
-process.env.NODE_ENV = 'p'
+process.env.NODE_ENV = 'd'
 
 function createWindow() {
   let win = new BrowserWindow({
