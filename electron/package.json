@@ -2,7 +2,7 @@
   "name": "FoE_bot",
   "productName": "Forge of Empires Bot",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "start": "electron . --disable-d3d11",
 

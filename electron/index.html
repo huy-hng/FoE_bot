@@ -16,48 +16,59 @@
           <button class="button" id="pause_button">Pause</button>
           <button class="button" id="stop_button">Stop</button>
         </div>
-        <hr>
+        <!-- <hr> -->
         <div class="checkboxes">
           <label>
-            <input class="checkbox" id="friends help" type="checkbox">
+            <input class="checkbox" id="friends help" type="checkbox" checked>
             Help Friends
           </label>
           <label>
-            <input class="checkbox" id="guild help" type="checkbox">
+            <input class="checkbox" id="friends tavern" type="checkbox" checked> 
+            Visit Taverns
+          </label>
+          <label>
+            <input class="checkbox" id="guild help" type="checkbox" checked>
             Help Guild
           </label>
           <label>
             <input class="checkbox" id="neighbors help" type="checkbox">
             Help Neighbors
           </label>
-          <label>
-            <input class="checkbox" id="friends tavern" type="checkbox"> 
-            Visit Taverns
-          </label>
         </div>
+
+        <div class="auto_login">
+          <p>Auto Login</p>
+          <select>
+            <option value="Arvahall">Arvahall</option>
+            <option value="Brisgard">Brisgard</option>
+            <option value="Cirgard">Cirgard</option>
+            <option value="Dinegu">Dinegu</option>
+            <option value="Eldenborough">Eldenborough</option>
+            <option value="Fel Dranghyr">Fel Dranghyr</option>
+            <option value="Greifental">Greifental</option>
+            <option value="Houndsmoor">Houndsmoor</option>
+            <option value="Jaims">Jaims</option>
+            <option value="Korch">Korch</option>
+            <option value="Langendorn">Langendorn</option>
+            <option value="Mount Killmore">Mount Killmore</option>
+            <option value="Noarsil">Noarsil</option>
+            <option value="Odhrorvar">Odhrorvar</option>
+            <option value="Parkog">Parkog</option>
+            <option value="Qunrir">Qunrir</option>
+            <option value="Rugnir">Rugnir</option>
+            <option value="Sinerania">Sinerania</option>
+            <option value="Tuulech">Tuulech</option>
+            <option value="Uceria">Uceria</option>
+          </select>
+        </div>
+
+        <!-- <p class="info_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis nunc hendrerit, pellentesque lorem sit amet, vulputate turpis. Mauris condimentum euismod leo, ac pretium eros gravida quis.</p> -->
+        <p class="info_text"></p>
       </div>
 
-    </webview>
-  
-
+    </div>
     <video class="hide" id="video"></video>
 
-    <script src="./modules/helper.js"></script>
-    <script>
-      document.getElementById("start_button").addEventListener("click", start);
-      document.getElementById("pause_button").addEventListener("click", toggle_pause);
-      document.getElementById("stop_button").addEventListener("click", toggle_stop);
-
-      // document.addEventListener("keydown", e => {
-      //   console.log(e);
-      //   if (e.which === 123) {
-      //     win.webContents.openDevTools();
-      //   } else if (e.which === 116) {
-      //     location.reload();
-      //   }
-      // });
-    </script>
-
-    
+    <script src="./modules/main.js"></script>
   </body>
 </html>
