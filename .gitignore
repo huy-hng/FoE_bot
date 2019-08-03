@@ -1,7 +1,8 @@
 python/dist/
 python/build/
 python/tests/
-electron/temp
-electron/release-builds
-electron/node_modules
-electron/logs
+python/__pycache__/
+electron/temp/
+electron/release-builds/
+electron/node_modules/
+electron/logs/

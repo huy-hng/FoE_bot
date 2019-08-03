@@ -92,7 +92,8 @@ async function click_all_images(tab, str_template, webview_data) {
       return
     }
   }
-  console.log('Finished task');
+  console.log(`Finished ${tab} ${str_template
+  }`);
 }
 
 async function click_images_in_page(str_template, webview_data) {
