@@ -1,6 +1,18 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    // "outFile": "dist/bundle",
+    "baseUrl": ".",
+    "paths": {
+      "./modules/*": ["./dist/modules/*"],
+      "./functions/*": ["./dist/functions/*"]
+    },
     "watch": true,
-  }
+  },
+  "exclude": [
+    "node_modules",
+  ]
 }

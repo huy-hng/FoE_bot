@@ -24,7 +24,7 @@ async function spawn_python(script, ...args) {
     logger.info('Running in development mode');
     
     scriptExecution = await spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
-      path.join(__dirname, `../../python/main.py`),
+      path.join(__dirname, `../../../python/main.py`),
       script,
       JSON.stringify(args)
     ]);

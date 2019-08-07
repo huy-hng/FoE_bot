@@ -1,10 +1,13 @@
-import python from "../functions/python_endpoints";
-import Logging from '../functions/logging';
-import initializer from '../functions/initialize';
-const logging = new Logging('watcher');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = require("fs");
+const python_endpoints_1 = require("../functions/python_endpoints");
+const logging_1 = require("../functions/logging");
+const initialize_1 = require("../functions/initialize");
+const logging = new logging_1.default('watcher');
 async function initialize() {
     let logger = logging.get_logger('initialize', 'info', true);
-    let webview_data = await initializer();
+    let webview_data = await initialize_1.default();
     logger.debug('webview_data', webview_data);
     if (webview_data.message) {
         console.log(webview_data.message);
@@ -21,7 +24,7 @@ async function main() {
     save_data(data);
 }
 async function get_all_helpers(data) {
-    let helpers_loc = python.find_all_templates('ereignis_uebersicht/golden_star', scale, webview_region);
+    let helpers_loc = python_endpoints_1.default.find_all_templates('ereignis_uebersicht/golden_star', scale, webview_region);
     let helpers_names = get_names(helpers_loc);
     for (let name of helpers_names) {
         if ((name in data.helpers)) {

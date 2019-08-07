@@ -1,8 +1,8 @@
-const python = require("./functions/python_endpoints")
-const helpers = require("./functions/helpers")
-const get_screenshot = require("./functions/screenshot");
-const Logging = require("./functions/logging");
-const initializer = require("./functions/initialize")
+const python = require("../functions/python_endpoints")
+const helpers = require("../functions/helpers")
+const get_screenshot = require("../functions/screenshot");
+const Logging = require("../functions/logging");
+const initializer = require("../functions/initialize")
 
 const logging = new Logging('helper')
 
@@ -18,7 +18,7 @@ async function initialize() {
 }
 
 
-async function start() {
+export async function start() {
   let logger = logging.get_logger('start', 'info', true, true)
 
   const webview_data = await initialize();
@@ -54,8 +54,8 @@ async function start() {
 
 function show_buttons(show) {
 
-  let start;
-  let rest;
+  let start: string;
+  let rest: string;
   if (show) {
     start = 'none';
     rest = 'flex';
@@ -130,7 +130,7 @@ async function check_last_page(webview_data) {
 //#region helper
 async function timer(fn, ...args) {
   let t0 = performance.now();
-  output = await fn(args);
+  let output = await fn(args);
   let t1 = performance.now();
   // console.log(`${fn.name} took ${t1 - t0} seconds.`);
   console.log(`${fn.name} took ${((t1 - t0) / 1000).toFixed(2)} seconds.`);
@@ -141,11 +141,11 @@ async function timer(fn, ...args) {
 let paused = false;
 let stop = false;
 
-function toggle_pause() {
+export function toggle_pause() {
   paused = !paused;
 }
 
-function toggle_stop() {
+export function toggle_stop() {
   stop = !stop;
   if (stop) console.log('Stopping')
 }
