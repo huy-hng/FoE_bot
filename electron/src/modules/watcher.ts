@@ -1,7 +1,7 @@
 import fs = require('fs')
 import python from "../functions/python_endpoints";
 import Logging from '../functions/logging';
-import initializer from '../functions/initialize';
+import initializer from '../initializers/base';
 
 const logging = new Logging('watcher');
 

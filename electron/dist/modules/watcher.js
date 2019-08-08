@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const python_endpoints_1 = require("../functions/python_endpoints");
 const logging_1 = require("../functions/logging");
-const initialize_1 = require("../functions/initialize");
+const base_1 = require("../initializers/base");
 const logging = new logging_1.default('watcher');
 async function initialize() {
     let logger = logging.get_logger('initialize', 'info', true);
-    let webview_data = await initialize_1.default();
+    let webview_data = await base_1.default();
     logger.debug('webview_data', webview_data);
     if (webview_data.message) {
         console.log(webview_data.message);

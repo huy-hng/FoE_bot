@@ -1,41 +1,42 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const initialize_helper_1 = require("../initializers/initialize_helper");
+const screenshot_1 = require("../functions/screenshot");
+const logging_1 = require("../functions/logging");
 const python = require("../functions/python_endpoints");
 const helpers = require("../functions/helpers");
-const get_screenshot = require("../functions/screenshot");
-const Logging = require("../functions/logging");
-const initializer = require("../functions/initialize");
-const logging = new Logging('helper');
+const logging = new logging_1.default('helper');
 async function initialize() {
-    let logger = logging.get_logger('initialize', 'info', true, true);
-    let webview_data = await initializer();
-    logger.debug('webview_data', webview_data);
-    if (webview_data.message) {
-        console.log(webview_data.message);
-        return false;
+    let logger = logging.get_logger('initialize', 'info', true);
+    let initialize = new initialize_helper_1.default();
+    let data = await initialize.start();
+    logger.debug('data', data);
+    if (data.success) {
+        return data;
     }
-    return webview_data;
+    console.log(data.message);
+    return false;
 }
 async function start() {
-    let logger = logging.get_logger('start', 'info', true, true);
+    let logger = logging.get_logger('start', 'info', true);
     const webview_data = await initialize();
+    if (!webview_data)
+        return;
     const checkboxes = ['friends help', 'friends tavern',
         'guild help', 'neighbors help'];
-    if (webview_data) {
-        show_buttons(true);
-        for (const str of checkboxes) {
-            if (document.getElementById(str).checked) {
-                let tab = str.split(' ')[0];
-                let action = str.split(' ')[1];
-                logger.info(action, tab);
-                await click_all_images(tab, action, webview_data);
-                await should_pause();
-                if (stop) {
-                    toggle_stop();
-                    console.log('Stopped');
-                    show_buttons(false);
-                    return;
-                }
+    show_buttons(true);
+    for (const str of checkboxes) {
+        if (document.getElementById(str).checked) {
+            let tab = str.split(' ')[0];
+            let action = str.split(' ')[1];
+            logger.info(action, tab);
+            await click_all_images(tab, action, webview_data);
+            await should_pause();
+            if (stop) {
+                toggle_stop();
+                console.log('Stopped');
+                show_buttons(false);
+                return;
             }
         }
     }
@@ -59,7 +60,7 @@ function show_buttons(show) {
     document.getElementById('stop_button').style.display = rest;
 }
 async function click_all_images(tab, str_template, webview_data) {
-    let logger = logging.get_logger('click_all_images', 'info', true, true);
+    let logger = logging.get_logger('click_all_images', 'info', true);
     logger.debug();
     await helpers.click_img(`helping/${tab}`, webview_data);
     await helpers.click_img('navigation/first', webview_data);
@@ -97,7 +98,7 @@ async function click_images_in_page(str_template, webview_data) {
 }
 async function check_last_page(webview_data) {
     await helpers.click_img("navigation/next", webview_data);
-    await get_screenshot("next_screen.png");
+    await screenshot_1.get_screenshot("next_screen.png");
     // let prob = await spawn_python("check_last_page", webview_data.webview_region, webview_data.roi_region);
     let prob = await python.check_last_page(webview_data);
     return prob;

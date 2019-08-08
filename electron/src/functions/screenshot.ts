@@ -1,12 +1,12 @@
+import Logging from './logging';
+import { desktopCapturer, remote } from "electron";
 
-const { desktopCapturer, remote } = require("electron");
+import * as helpers from './helpers';
 
-const helpers = require("./helpers");
-const Logging = require("./logging");
 const logging = new Logging('get_screenshot');
 
-async function get_screenshot(image_name='screen.png') {
-  logger_screenshot = logging.get_logger('get_screenshot', 'WARN')
+export async function get_screenshot(image_name='screen.png') {
+  let logger_screenshot = logging.get_logger('get_screenshot', 'WARN')
   let t0 = performance.now();
 
   let window_size = remote
@@ -90,5 +90,3 @@ async function save_img(base64str, image_name) {
     return true;
   });
 }
-
-module.exports = get_screenshot;

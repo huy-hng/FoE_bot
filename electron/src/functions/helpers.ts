@@ -1,22 +1,24 @@
-const Logging = require("./logging");
-const get_screenshot = require("./screenshot");
-const python = require("./python_endpoints");
+import Logging from "./logging";
+import { get_screenshot } from './screenshot';
+import * as python from './python_endpoints';
 
 const logging_helpers = new Logging('helpers');
 
-async function click_img(str_template, webview_data) {
-  let logger = logging_helpers.get_logger('click_img', 'DEBUG')
-  await get_screenshot("screen.png");
+export async function click_img(template: string, webview_data) {
+
+  /* scale: number, webview_region: number[], roi_region?: number[] */
   let { scale, webview_region, roi_region } = webview_data;
-  let { prob, coord } = await python.find_template(str_template, scale, webview_region, roi_region)
-  logger.debug(str_template, prob, coord)
+  let logger = logging_helpers.get_logger('click_img', 'DEBUG')
+
+  await get_screenshot("screen.png");
+  let { prob, coord } = await python.find_template(template, scale, webview_region, roi_region)
+  logger.debug(template, prob, coord)
+  
   if (prob > 0.8) await mouse_press(coord)
   return prob;
 }
 
-
-
-function mouse_press(coord) {
+async function mouse_press(coord: number[]) {
   let webview = document.getElementById("webview");
 
   let x = coord[0] * webview.clientWidth;
@@ -38,9 +40,6 @@ function mouse_press(coord) {
   });
 }
 
-function sleep(ms) {
+export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-exports.sleep = sleep;
-exports.click_img = click_img;

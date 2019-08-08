@@ -1,53 +1,56 @@
-const python = require("../functions/python_endpoints")
-const helpers = require("../functions/helpers")
-const get_screenshot = require("../functions/screenshot");
-const Logging = require("../functions/logging");
-const initializer = require("../functions/initialize")
+import Initializer from '../initializers/initialize_helper'
+import { get_screenshot } from "../functions/screenshot"
+import Logging from "../functions/logging"
+
+import * as python from "../functions/python_endpoints"
+import * as helpers from '../functions/helpers';
 
 const logging = new Logging('helper')
 
 async function initialize() {
-  let logger = logging.get_logger('initialize', 'info', true, true)
-  let webview_data = await initializer();
-  logger.debug('webview_data', webview_data)
-  if (webview_data.message) {
-    console.log(webview_data.message);
-    return false;
+  let logger = logging.get_logger('initialize', 'info', true)
+  let initialize = new Initializer();
+  let data = await initialize.start();
+  logger.debug('data', data)
+  if (data.success) {
+    return data;
   }
-  return webview_data
+
+  console.log(data.message)
+  return false
 }
 
 
 export async function start() {
-  let logger = logging.get_logger('start', 'info', true, true)
+  let logger = logging.get_logger('start', 'info', true)
 
   const webview_data = await initialize();
+  if (!webview_data) return
 
   const checkboxes = ['friends help', 'friends tavern', 
                       'guild help', 'neighbors help']
 
-  if (webview_data) {
-    show_buttons(true)
+  show_buttons(true)
 
-    for (const str of checkboxes) {
-      if (document.getElementById(str).checked) {
-        let tab = str.split(' ')[0];
-        let action = str.split(' ')[1];
+  for (const str of checkboxes) {
+    if (document.getElementById(str).checked) {
+      let tab = str.split(' ')[0];
+      let action = str.split(' ')[1];
 
-        logger.info(action, tab)
-        
-        await click_all_images(tab, action, webview_data);
-  
-        await should_pause();
-        if (stop) {
-          toggle_stop()
-          console.log('Stopped')
-          show_buttons(false)
-          return
-        }
+      logger.info(action, tab)
+      
+      await click_all_images(tab, action, webview_data);
+
+      await should_pause();
+      if (stop) {
+        toggle_stop()
+        console.log('Stopped')
+        show_buttons(false)
+        return
       }
     }
   }
+  
   console.log('Finished everything')
   show_buttons(false)
 }
@@ -69,8 +72,9 @@ function show_buttons(show) {
 }
 
 async function click_all_images(tab, str_template, webview_data) {
-  let logger = logging.get_logger('click_all_images', 'info', true, true)
+  let logger = logging.get_logger('click_all_images', 'info', true)
   logger.debug();
+
   
   await helpers.click_img(`helping/${tab}`, webview_data)
   await helpers.click_img('navigation/first', webview_data);

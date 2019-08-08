@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const screenshot_1 = require("./screenshot");
-const logging_1 = require("./logging");
-const python = require("./python_endpoints");
-const helpers = require("./helpers");
+const screenshot_1 = require("../screenshot");
+const logging_1 = require("../logging");
+const python = require("../python_endpoints");
+const helpers = require("../helpers");
 const logging_initialize = new logging_1.Logging('initialize');
 class Initialize {
     async start() {

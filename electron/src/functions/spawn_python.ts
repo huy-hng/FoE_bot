@@ -1,18 +1,17 @@
-const path = require("path");
-const helpers = require("./helpers");
-const Logging = require("./logging");
+import * as path from "path"
+import * as helpers from './helpers';
+import Logging from './logging';
 
 const logging = new Logging('spawn_python')
-
+import { spawn } from "child_process"
 
 let uint8arrayToString = data => {
   return String.fromCharCode.apply(null, data);
 };
 
-async function spawn_python(script, ...args) {
-  let logger = logging.get_logger('main', 'WARN', true, true)
-
-  const spawn = require("child_process").spawn;
+export async function spawn_python(script: string, ...args) {
+  let logger = logging.get_logger('main', 'WARN', true)
+  
   logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
 
   let scriptExecution;
@@ -73,5 +72,3 @@ async function spawn_python(script, ...args) {
     throw 'Unable to parse JSON from python.'
   }
 }
-
-module.exports = spawn_python;

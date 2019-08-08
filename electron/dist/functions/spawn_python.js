@@ -1,21 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const helpers = require("./helpers");
-const Logging = require("./logging");
-const logging = new Logging('spawn_python');
+const logging_1 = require("./logging");
+const logging = new logging_1.default('spawn_python');
+const child_process_1 = require("child_process");
 let uint8arrayToString = data => {
     return String.fromCharCode.apply(null, data);
 };
 async function spawn_python(script, ...args) {
-    let logger = logging.get_logger('main', 'WARN', true, true);
-    const spawn = require("child_process").spawn;
+    let logger = logging.get_logger('main', 'WARN', true);
     logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
     let scriptExecution;
     if (process.env.NODE_ENV == 'p') {
-        scriptExecution = await spawn(path.join(__dirname, "/../../python/main.exe"), [script, JSON.stringify(args)]);
+        scriptExecution = await child_process_1.spawn(path.join(__dirname, "/../../python/main.exe"), [script, JSON.stringify(args)]);
     }
     else {
         logger.info('Running in development mode');
-        scriptExecution = await spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
+        scriptExecution = await child_process_1.spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
             path.join(__dirname, `../../../python/main.py`),
             script,
             JSON.stringify(args)
@@ -64,4 +66,4 @@ async function spawn_python(script, ...args) {
         throw 'Unable to parse JSON from python.';
     }
 }
-module.exports = spawn_python;
+exports.spawn_python = spawn_python;

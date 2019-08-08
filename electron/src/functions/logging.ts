@@ -1,49 +1,38 @@
+import * as fs from 'fs';
 
-const fs = require('fs')
-
-class Logging {
-  constructor(module_name) {
-    this.loggers = {}
-    this.module_name = module_name
+export default class Logging {
+  loggers = {};
+  constructor(public module_name: string) {
   }
 
-
-  get_logger(name, level = 'DEBUG', log_to_console = false) {
-    if (!this.loggers.hasOwnProperty(name)) {
-      let logger_info = {
-        module_name: this.module_name,
-        name,
-        level,
-        log_to_console,
-      }
-      let logger = new Logger(logger_info)
-      this.loggers.name = logger
+  get_logger(logger_name: string, logging_level = 'DEBUG', log_to_console = false) {
+    if (!this.loggers.hasOwnProperty(logger_name)) {
+      let logger = new Logger(this.module_name, logger_name, logging_level, log_to_console)
+      this.loggers[logger_name] = logger
     }
-    return this.loggers.name
+    return this.loggers[logger_name]
   }
 }
 
 
 class Logger {
-  constructor(logger_info) {
-    this.module_name = logger_info.module_name;
-    this.name = logger_info.name;
-    let level = logger_info.level;
 
-    this.console = logger_info.log_to_console
-
-    this.levels = {
-      NOTSET: 0,
-      DEBUG: 10,
-      INFO: 20,
-      WARN: 30,
-      ERROR: 40,
-      CRITICAL: 50
-    }
+  level: number;
+  levels = {
+    NOTSET: 0,
+    DEBUG: 10,
+    INFO: 20,
+    WARN: 30,
+    ERROR: 40,
+    CRITICAL: 50
+  }
 
 
-    if (typeof level == 'number') this.level = level;
-    else this.level = this.levels[level];
+  constructor(public module_name: string, public logger_name: string, 
+              public logging_level: (string|number), public console: boolean) {
+
+    if (typeof logging_level == 'number') this.level = logging_level;
+    else this.level = this.levels[logging_level];
 
   }
 
@@ -74,8 +63,8 @@ class Logger {
         message += arg + ' ';
       }
     }
-    let console_log = padded_level + time + `${this.module_name}: ${this.name}: ` + message
-    let file_log = padded_level + time + `${this.name}: ` + message
+    let console_log = padded_level + time + `${this.module_name}: ${this.logger_name}: ` + message
+    let file_log = padded_level + time + `${this.logger_name}: ` + message
 
     return { console_log, file_log }
   }
@@ -105,20 +94,16 @@ class Logger {
   }
 }
 
-module.exports = Logging;
-
-
 function test_logging() {
-  logging = new Logging('my_module');
-  logger = logging.get_logger('my_logger', 'DEBUG', log_to_console = true)
+  let logging = new Logging('my_module');
+  let logger = logging.get_logger('my_logger', 'DEBUG', true)
 
   logger.debug('debug message', { asd: 'asd', erg: 'wef' }, [123, 651, 156, 1])
   logger.info('info message')
   logger.warn('warning message')
   logger.error('error message')
 
-  logger = logging.get_logger('my_logger 2', 'DEBUG', log_to_console = true)
-
+  logger = logging.get_logger('my_logger 2', 'DEBUG', true)
   logger.debug('debug message', 'second message', 'third message')
 }
 

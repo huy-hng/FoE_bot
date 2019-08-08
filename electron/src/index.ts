@@ -7,7 +7,7 @@ require("electron-reload")(__dirname, {
   ignored: /.png|.log/,
   // ignored: /screen.png|index.html/,
   argv: [],
-  hardResetMethod: 'exit',
+  // hardResetMethod: 'exit',
 });
 
 process.env.NODE_ENV = 'd'

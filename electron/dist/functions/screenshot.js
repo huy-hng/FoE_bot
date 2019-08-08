@@ -1,15 +1,17 @@
-const { desktopCapturer, remote } = require("electron");
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const logging_1 = require("./logging");
+const electron_1 = require("electron");
 const helpers = require("./helpers");
-const Logging = require("./logging");
-const logging = new Logging('get_screenshot');
+const logging = new logging_1.default('get_screenshot');
 async function get_screenshot(image_name = 'screen.png') {
-    logger_screenshot = logging.get_logger('get_screenshot', 'WARN');
+    let logger_screenshot = logging.get_logger('get_screenshot', 'WARN');
     let t0 = performance.now();
-    let window_size = remote
+    let window_size = electron_1.remote
         .getCurrentWindow()
         .webContents.getOwnerBrowserWindow()
         .getBounds();
-    await desktopCapturer
+    await electron_1.desktopCapturer
         .getSources({ types: ["window"] })
         .then(async (sources) => {
         for (const source of sources) {
@@ -40,6 +42,7 @@ async function get_screenshot(image_name = 'screen.png') {
     let t1 = performance.now();
     logger_screenshot.info(`Screenshot took ${((t1 - t0) / 1000).toFixed(2)} seconds.`);
 }
+exports.get_screenshot = get_screenshot;
 async function handleStream(stream, image_name) {
     const video = document.querySelector("video");
     video.srcObject = stream;
@@ -72,4 +75,3 @@ async function save_img(base64str, image_name) {
         return true;
     });
 }
-module.exports = get_screenshot;

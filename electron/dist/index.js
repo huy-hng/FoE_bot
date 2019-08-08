@@ -8,7 +8,6 @@ require("electron-reload")(__dirname, {
     ignored: /.png|.log/,
     // ignored: /screen.png|index.html/,
     argv: [],
-    hardResetMethod: 'exit',
 });
 process.env.NODE_ENV = 'd';
 function createWindow() {

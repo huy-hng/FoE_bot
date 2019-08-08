@@ -36,6 +36,24 @@ def get_webview_region(*_):
   return [xmin, xmax, ymin, ymax]
 
 
+def get_scale(webview_region, template: str):
+  template_prob = []
+  for scale in np.linspace(0.8, 1.2, 10)[::-1]:
+    # loop through various scales to get probability
+    data = js_end.find_template(template, scale, webview_region)
+    prob = data['prob']
+    if prob > 0.9:
+      template_prob.append([prob, scale])
+      break
+    elif prob > 0.8:
+      template_prob.append([prob, scale])
+
+  if template_prob:
+    scale = sorted(template_prob, key=lambda x: x[0], reverse=True)[0][1]
+    return scale
+  return None
+
+
 def get_scale_and_check_logged_in(webview_region):
   in_game_prob = []
   for scale in np.linspace(0.8, 1.2, 10)[::-1]:
