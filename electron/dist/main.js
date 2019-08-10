@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const initialize_auto_login_1 = require("./initializers/initialize_auto_login");
 const logging_1 = require("./functions/logging");
+const process_data_1 = require("./functions/process_data");
 const helper = require("./modules/helper");
 const helpers = require("./functions/helpers");
 const logging = new logging_1.default('Main');
+const app_data = new process_data_1.default('app');
 document.getElementById("start_button").addEventListener("click", helper.start);
 document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
 document.getElementById("stop_button").addEventListener("click", helper.toggle_stop);

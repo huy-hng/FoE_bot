@@ -17,7 +17,8 @@ async function spawn_python(script, ...args) {
     }
     else {
         logger.info('Running in development mode');
-        scriptExecution = await child_process_1.spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
+        // scriptExecution = await spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
+        scriptExecution = await child_process_1.spawn("C:\\Users\\huy-h\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
             path.join(__dirname, `../../../python/main.py`),
             script,
             JSON.stringify(args)

@@ -1,10 +1,11 @@
 import Initializer from './initializers/initialize_auto_login';
-import Logging from './functions/logging'
-import * as helper from "./modules/helper"
+import Logging from './functions/logging';
+import Data from './functions/process_data';
+import * as helper from "./modules/helper";
 import * as helpers from './functions/helpers';
 
 const logging = new Logging('Main');
-
+const app_data = new Data('app')
 
 document.getElementById("start_button").addEventListener("click", helper.start);
 document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
@@ -36,6 +37,8 @@ async function auto_login() {
   let logger = logging.get_logger('auto_login', 'DEBUG', true)
   await helpers.sleep(5000)
   let server = document.getElementById('server').value;
+  
+
   logger.debug('server:', server);
   const initialize = new Initializer(server);
   let data = await initialize.start()
