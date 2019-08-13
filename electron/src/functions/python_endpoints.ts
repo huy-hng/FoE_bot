@@ -1,12 +1,15 @@
 import { spawn_python } from './spawn_python';
+import { WebviewData } from '../interfaces';
+
 
 export async function find_template(template: string, scale: number, 
                                     webview_region: number[], roi_region?: number[]) {
-  let { prob, coord } = await spawn_python("find_template", template, scale, webview_region, roi_region);
+
+  let { prob, coord }: {prob: number, coord: number[]} = await spawn_python("find_template", template, scale, webview_region, roi_region);
   return { prob, coord }
 }
 
-export async function check_last_page(webview_data) {
+export async function check_last_page(webview_data: WebviewData) {
   let { webview_region, roi_region } = webview_data;
   let prob: number = await spawn_python("check_last_page", webview_region, roi_region);
   return prob

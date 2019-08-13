@@ -15,16 +15,23 @@ class InitializeAutoLogin extends base_1.default {
         let webview_region = await this.get_webview_region();
         let scale = await this.get_scale(webview_region, 'spielen_text');
         logger.debug('scale', scale);
+        let success = false;
+        let message;
         if (scale) {
-            await helpers.click_img('spielen_text', { scale, webview_region });
-            await helpers.click_img(`servers/${this.server}`, { scale, webview_region });
-            logger.info('Finished Initialization');
-            return { success: true, scale, webview_region };
+            let play = await helpers.click_img('spielen_text', { scale, webview_region });
+            let server = await helpers.click_img(`servers/${this.server}`, { scale, webview_region });
+            if (play && server) {
+                success = true;
+            }
+            else if (!play) {
+                message = "Couldn't find play button";
+            }
+            else if (play && !server) {
+                message = "Couldn't find server";
+            }
         }
-        else {
-            logger.info('Finished Initialization');
-            return { success: false, message: 'Auto login failed' };
-        }
+        message = 'Finished Initialization';
+        return { success, scale, webview_region, message };
     }
 }
 exports.default = InitializeAutoLogin;

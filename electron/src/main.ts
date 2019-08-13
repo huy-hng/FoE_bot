@@ -1,53 +1,35 @@
-import Initializer from './initializers/initialize_auto_login';
 import Logging from './functions/logging';
 import Data from './functions/process_data';
-import * as helper from "./modules/helper";
-import * as helpers from './functions/helpers';
+import { auto_login } from './functions/auto_login';
+import { initialize_gui } from './initializers/gui'
+import { start as event_listener_start } from './event_listener'
 
 const logging = new Logging('Main');
-const app_data = new Data('app')
-
-document.getElementById("start_button").addEventListener("click", helper.start);
-document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
-document.getElementById("stop_button").addEventListener("click", helper.toggle_stop);
 
 
-onload = function () {
+async function on_load() {
+  const logger = logging.get_logger('on_load', 'DEBUG', true);
+  logger.debug('start on load');
   let webview = document.getElementById("webview");
-  let indicator = document.querySelector(".indicator");
 
-  let loadstart = function () {
-    indicator.innerText = "loading...";
+
+  let loadstart = () => {
     console.log('loading...')
   }
-  let loadstop = function () {
+  let loadstop = () => {
     console.log('done')
-    indicator.innerText = "done";
   }
+
   webview.addEventListener("loadstart", loadstart);
   webview.addEventListener("loadstop", loadstop);
 }
 
-// while(true) {
-//   helpers.sleep(100);
 
-// }
-
-async function auto_login() {
-  let logger = logging.get_logger('auto_login', 'DEBUG', true)
-  await helpers.sleep(5000)
-  let server = document.getElementById('server').value;
-  
-
-  logger.debug('server:', server);
-  const initialize = new Initializer(server);
-  let data = await initialize.start()
-  logger.debug('data:', data);
-  if (data.success) {
-    logger.info('Successfully logged in');
-  } else {
-    logger.info('Failed auto login')
-  }
+async function start() {
+  await on_load()
+  await initialize_gui()
+  event_listener_start()
+  auto_login()
 }
 
-auto_login()
+start()

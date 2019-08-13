@@ -1,5 +1,6 @@
 import Base_initializer from './base';
 import Logging from '../functions/logging';
+import { get_screenshot } from '../functions/screenshot';
 import * as python from '../functions/python_endpoints';
 import * as helpers from '../functions/helpers';
 
@@ -34,10 +35,8 @@ export default class InitializeHelper extends Base_initializer {
     let roi_on_screen = await python.check_roi_on_screen(scale, webview_region);
     if (roi_on_screen == 0.5) {
       // press up arrow
-      await get_screenshot("screen.png");
-      let { prob, coord } = await python.find_template('navigation/up', scale, webview_region)
-      if (prob > 0.8) await mouse_press(coord)
-      logger.info('waiting');
+      helpers.click_img('navigation/up', {scale, webview_region})
+
       await helpers.sleep(2000);
 
     } else if (roi_on_screen == 0) throw new Error('Something is wrong')

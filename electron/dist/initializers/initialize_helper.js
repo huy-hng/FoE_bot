@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_1 = require("./base");
 const logging_1 = require("../functions/logging");
+const screenshot_1 = require("../functions/screenshot");
 const python = require("../functions/python_endpoints");
 const helpers = require("../functions/helpers");
 const logging = new logging_1.default('InitializeHelper');
@@ -28,16 +29,12 @@ class InitializeHelper extends base_1.default {
         let roi_on_screen = await python.check_roi_on_screen(scale, webview_region);
         if (roi_on_screen == 0.5) {
             // press up arrow
-            await get_screenshot("screen.png");
-            let { prob, coord } = await python.find_template('navigation/up', scale, webview_region);
-            if (prob > 0.8)
-                await mouse_press(coord);
-            logger.info('waiting');
+            helpers.click_img('navigation/up', { scale, webview_region });
             await helpers.sleep(2000);
         }
         else if (roi_on_screen == 0)
             throw new Error('Something is wrong');
-        await get_screenshot("screen.png");
+        await screenshot_1.get_screenshot("screen.png");
         let roi_region = await python.get_roi_region(scale, webview_region);
         logger.debug(roi_region);
         return roi_region;

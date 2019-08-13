@@ -33,6 +33,7 @@ export async function start() {
   show_buttons(true)
 
   for (const str of checkboxes) {
+    //@ts-ignore
     if (document.getElementById(str).checked) {
       let tab = str.split(' ')[0];
       let action = str.split(' ')[1];
@@ -102,9 +103,9 @@ async function click_all_images(tab, str_template, webview_data) {
 
 async function click_images_in_page(str_template, webview_data) {
 
-  let help_prob = 1;
+  let help_prob = true;
   let loop_count = 0;
-  while (help_prob > 0.8) {
+  while (help_prob) {
 
     help_prob = await helpers.click_img(str_template, webview_data);
 

@@ -4,22 +4,22 @@ const logging_1 = require("./logging");
 const screenshot_1 = require("./screenshot");
 const python = require("./python_endpoints");
 const logging_helpers = new logging_1.default('helpers');
-async function click_img(template, webview_data) {
-    /* scale: number, webview_region: number[], roi_region?: number[] */
+async function click_img(template, webview_data, prop_threshold = 0.8) {
     let { scale, webview_region, roi_region } = webview_data;
-    let logger = logging_helpers.get_logger('click_img', 'DEBUG');
+    let logger = logging_helpers.get_logger('click_img', 'INFO');
     await screenshot_1.get_screenshot("screen.png");
     let { prob, coord } = await python.find_template(template, scale, webview_region, roi_region);
     logger.debug(template, prob, coord);
-    if (prob > 0.8)
+    if (prob > prop_threshold)
         await mouse_press(coord);
-    return prob;
+    return prob > prop_threshold;
 }
 exports.click_img = click_img;
 async function mouse_press(coord) {
     let webview = document.getElementById("webview");
     let x = coord[0] * webview.clientWidth;
     let y = coord[1] * webview.clientHeight;
+    //@ts-ignore
     webview.sendInputEvent({
         type: "mouseDown",
         x: x,
@@ -27,6 +27,7 @@ async function mouse_press(coord) {
         button: "left",
         clickCount: 1
     });
+    //@ts-ignore
     webview.sendInputEvent({
         type: "mouseUp",
         x: x,

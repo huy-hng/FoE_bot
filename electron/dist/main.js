@@ -1,45 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const initialize_auto_login_1 = require("./initializers/initialize_auto_login");
 const logging_1 = require("./functions/logging");
-const process_data_1 = require("./functions/process_data");
-const helper = require("./modules/helper");
-const helpers = require("./functions/helpers");
+const auto_login_1 = require("./functions/auto_login");
+const gui_1 = require("./initializers/gui");
+const event_listener_1 = require("./event_listener");
 const logging = new logging_1.default('Main');
-const app_data = new process_data_1.default('app');
-document.getElementById("start_button").addEventListener("click", helper.start);
-document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
-document.getElementById("stop_button").addEventListener("click", helper.toggle_stop);
-onload = function () {
+async function on_load() {
+    const logger = logging.get_logger('on_load', 'DEBUG', true);
+    logger.debug('start on load');
     let webview = document.getElementById("webview");
-    let indicator = document.querySelector(".indicator");
-    let loadstart = function () {
-        indicator.innerText = "loading...";
+    let loadstart = () => {
         console.log('loading...');
     };
-    let loadstop = function () {
+    let loadstop = () => {
         console.log('done');
-        indicator.innerText = "done";
     };
     webview.addEventListener("loadstart", loadstart);
     webview.addEventListener("loadstop", loadstop);
-};
-// while(true) {
-//   helpers.sleep(100);
-// }
-async function auto_login() {
-    let logger = logging.get_logger('auto_login', 'DEBUG', true);
-    await helpers.sleep(5000);
-    let server = document.getElementById('server').value;
-    logger.debug('server:', server);
-    const initialize = new initialize_auto_login_1.default(server);
-    let data = await initialize.start();
-    logger.debug('data:', data);
-    if (data.success) {
-        logger.info('Successfully logged in');
-    }
-    else {
-        logger.info('Failed auto login');
-    }
 }
-auto_login();
+async function start() {
+    await on_load();
+    await gui_1.initialize_gui();
+    event_listener_1.start();
+    auto_login_1.auto_login();
+}
+start();
