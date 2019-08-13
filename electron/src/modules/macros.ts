@@ -16,8 +16,8 @@ async function initialize() {
     return false;
   }
   
-  let coords = get_button_coords();
-  return coords
+  // let coords = get_button_coords();
+  // return coords
 }
 
 

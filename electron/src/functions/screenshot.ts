@@ -1,5 +1,7 @@
 import Logging from './logging';
 import { desktopCapturer, remote } from "electron";
+import { Buffer } from 'buffer';
+import * as fs from 'fs';
 
 import * as helpers from './helpers';
 
@@ -11,6 +13,7 @@ export async function get_screenshot(image_name='screen.png') {
 
   let window_size = remote
     .getCurrentWindow()
+    //@ts-ignore
     .webContents.getOwnerBrowserWindow()
     .getBounds();
 
@@ -18,6 +21,7 @@ export async function get_screenshot(image_name='screen.png') {
   await desktopCapturer
     .getSources({ types: ["window"] })
     .then(async sources => {
+      //@ts-ignore
       for (const source of sources) {
         if (source.name === "FoE Bot") {
           try {
@@ -25,6 +29,7 @@ export async function get_screenshot(image_name='screen.png') {
               {
                 audio: false,
                 video: {
+                  //@ts-ignore
                   mandatory: {
                     chromeMediaSource: "desktop",
                     chromeMediaSourceId: source.id,
@@ -78,15 +83,8 @@ async function handleStream(stream, image_name) {
 }
 
 async function save_img(base64str, image_name) {
-  const fs = require("fs");
-  const Buffer = require("buffer").Buffer;
 
   let buf = Buffer.from(base64str, "base64");
 
-  await fs.writeFile(`temp/${image_name}`, buf, err => {
-    if (err) {
-      return console.log(err);
-    }
-    return true;
-  });
+  fs.writeFileSync(`temp/${image_name}`, buf);
 }

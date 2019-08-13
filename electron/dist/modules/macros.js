@@ -13,8 +13,8 @@ async function initialize() {
         console.log(webview_data.message);
         return false;
     }
-    let coords = get_button_coords();
-    return coords;
+    // let coords = get_button_coords();
+    // return coords
 }
 async function get_building_button_coords({ scale, webview_region, roi_region }) {
     let logger = logging.get_logger('button_coords', 'info');

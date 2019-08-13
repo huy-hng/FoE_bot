@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const logging_1 = require("./logging");
 const electron_1 = require("electron");
+const buffer_1 = require("buffer");
+const fs = require("fs");
 const helpers = require("./helpers");
 const logging = new logging_1.default('get_screenshot');
 async function get_screenshot(image_name = 'screen.png') {
@@ -9,17 +11,20 @@ async function get_screenshot(image_name = 'screen.png') {
     let t0 = performance.now();
     let window_size = electron_1.remote
         .getCurrentWindow()
+        //@ts-ignore
         .webContents.getOwnerBrowserWindow()
         .getBounds();
     await electron_1.desktopCapturer
         .getSources({ types: ["window"] })
         .then(async (sources) => {
+        //@ts-ignore
         for (const source of sources) {
             if (source.name === "FoE Bot") {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({
                         audio: false,
                         video: {
+                            //@ts-ignore
                             mandatory: {
                                 chromeMediaSource: "desktop",
                                 chromeMediaSourceId: source.id,
@@ -65,13 +70,6 @@ async function handleStream(stream, image_name) {
     }
 }
 async function save_img(base64str, image_name) {
-    const fs = require("fs");
-    const Buffer = require("buffer").Buffer;
-    let buf = Buffer.from(base64str, "base64");
-    await fs.writeFile(`temp/${image_name}`, buf, err => {
-        if (err) {
-            return console.log(err);
-        }
-        return true;
-    });
+    let buf = buffer_1.Buffer.from(base64str, "base64");
+    fs.writeFileSync(`temp/${image_name}`, buf);
 }
