@@ -3,13 +3,14 @@ import Logging from '../functions/logging';
 import { get_screenshot } from '../functions/screenshot';
 import * as python from '../functions/python_endpoints';
 import * as helpers from '../functions/helpers';
+import { WebviewData } from '../interfaces';
 
 
 const logging = new Logging('InitializeHelper');
 
 
 export default class InitializeHelper extends Base_initializer {
-  async start() {
+  async start(): Promise<WebviewData> {
     let logger = logging.get_logger('main', 'INFO', true)
     logger.debug()
 
@@ -18,17 +19,18 @@ export default class InitializeHelper extends Base_initializer {
     let scale = await this.get_scale(webview_region, 'in_game');
     logger.debug('scale', scale);
 
+    let success = false;
+    let roi_region: number[];
     if (scale) {
-      let roi_region = await this.get_roi_region(webview_region, scale)
+      success = true;
+      roi_region = await this.get_roi_region(scale, webview_region)
       logger.info('Finished Initialization')
-      return { success: true, scale, webview_region, roi_region }
-    } else {
-      logger.info('Initialization Failed')
-      return { success: false, message: 'You need to log in.'}
-    }    
+    }
+
+    return { success, scale, webview_region, roi_region}
   }
 
-  protected async get_roi_region(webview_region: number[], scale: number) {
+  protected async get_roi_region(scale: number, webview_region: number[]) {
     let logger = logging.get_logger('get_roi_region', 'DEBUG', true)
     logger.debug(`args: ts.scale = ${scale}, webview_region = ${webview_region}`);
 

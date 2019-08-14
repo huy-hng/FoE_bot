@@ -1,13 +1,8 @@
-export interface Initialize {
-  success: boolean;
+export interface WebviewData {
+  success?: boolean;
   scale: number;
   webview_region: number[];
   roi_region?: number[];
-  message: string;
+  message?: string;
 }
 
-export interface WebviewData {
-  scale: number;
-  webview_region: number[];
-  roi_region?: number[]
-}

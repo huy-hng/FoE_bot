@@ -1,8 +1,7 @@
-import * as interfaces from '../interfaces';
 import Base_initializer from './base';
 import Logging from '../functions/logging';
-import * as python from '../functions/python_endpoints';
 import * as helpers from '../functions/helpers';
+import { WebviewData } from '../interfaces';
 
 
 const logging = new Logging('InitializeAutoLogin');
@@ -11,7 +10,7 @@ const logging = new Logging('InitializeAutoLogin');
 export default class InitializeAutoLogin extends Base_initializer {
   constructor(private server: string) { super() }
   
-  async start(): Promise<interfaces.Initialize>  {
+  async start(): Promise<WebviewData>  {
     let logger = logging.get_logger('main', 'INFO', true) 
     logger.debug()
 

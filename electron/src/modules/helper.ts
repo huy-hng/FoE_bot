@@ -4,28 +4,18 @@ import Logging from "../functions/logging"
 
 import * as python from "../functions/python_endpoints"
 import * as helpers from '../functions/helpers';
+import { WebviewData } from '../interfaces';
 
 const logging = new Logging('helper')
-
-async function initialize() {
-  let logger = logging.get_logger('initialize', 'info', true)
-  let initialize = new Initializer();
-  let data = await initialize.start();
-  logger.debug('data', data)
-  if (data.success) {
-    return data;
-  }
-
-  console.log(data.message)
-  return false
-}
-
 
 export async function start() {
   let logger = logging.get_logger('start', 'info', true)
 
-  const webview_data = await initialize();
-  if (!webview_data) return
+  const initialize = new Initializer();
+  const webview_data = await initialize.start();
+  logger.debug('webview_data', webview_data)
+  
+  if (!webview_data.success) return
 
   const checkboxes = ['friends help', 'friends tavern', 
                       'guild help', 'neighbors help']
@@ -46,8 +36,7 @@ export async function start() {
       if (stop) {
         toggle_stop()
         console.log('Stopped')
-        show_buttons(false)
-        return
+        break
       }
     }
   }
@@ -56,7 +45,7 @@ export async function start() {
   show_buttons(false)
 }
 
-function show_buttons(show) {
+function show_buttons(show: boolean) {
 
   let start: string;
   let rest: string;
@@ -72,7 +61,7 @@ function show_buttons(show) {
   document.getElementById('stop_button').style.display = rest;
 }
 
-async function click_all_images(tab, str_template, webview_data) {
+async function click_all_images(tab: string, template: string, webview_data: WebviewData) {
   let logger = logging.get_logger('click_all_images', 'info', true)
   logger.debug();
 
@@ -82,7 +71,7 @@ async function click_all_images(tab, str_template, webview_data) {
   await helpers.sleep(2000);
   let last_page_prob = 0;
   while (last_page_prob < 0.9) {
-    let loop_count = await click_images_in_page(`helping/${str_template}`, webview_data);
+    let loop_count = await click_images_in_page(`helping/${template}`, webview_data);
     logger.debug('loop_count', loop_count)
 
     if (loop_count < 2) {
@@ -97,17 +86,17 @@ async function click_all_images(tab, str_template, webview_data) {
       return
     }
   }
-  console.log(`Finished ${tab} ${str_template
+  console.log(`Finished ${tab} ${template
   }`);
 }
 
-async function click_images_in_page(str_template, webview_data) {
+async function click_images_in_page(template: string, webview_data: WebviewData) {
 
   let help_prob = true;
   let loop_count = 0;
   while (help_prob) {
 
-    help_prob = await helpers.click_img(str_template, webview_data);
+    help_prob = await helpers.click_img(template, webview_data);
 
     await should_pause();
     if (stop) {
@@ -121,7 +110,7 @@ async function click_images_in_page(str_template, webview_data) {
 }
 
 
-async function check_last_page(webview_data) {
+async function check_last_page(webview_data: WebviewData) {
 
   await helpers.click_img("navigation/next", webview_data);
   await get_screenshot("next_screen.png");
