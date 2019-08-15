@@ -25,9 +25,24 @@ class Data {
     }
     async get_data() {
         const logger = logging.get_logger('read_data', 'INFO', true);
-        let data = fs.readFileSync(this.file_location, 'utf8');
+        let data;
+        if (fs.existsSync(this.file_location)) {
+            data = fs.readFileSync(this.file_location, 'utf8');
+        }
+        else {
+            data = this.create_file();
+        }
         logger.debug('data:', data);
         return JSON.parse(data);
+    }
+    create_file() {
+        let default_settings;
+        if (this.file_name == 'app')
+            default_settings = JSON.stringify(app_settings);
+        if (this.file_name == 'helper')
+            default_settings = JSON.stringify(helper_empty_params);
+        this.set_data(default_settings);
+        return default_settings;
     }
     async set_data(data) {
         const logger = logging.get_logger('write_data', 'INFO', true);
@@ -39,3 +54,16 @@ class Data {
     }
 }
 exports.default = Data;
+const app_settings = {
+    "auto_login": false,
+    "auto_login_server": "",
+    "friends help": true,
+    "friends tavern": true,
+    "guild help": true,
+    "neighbors help": false
+};
+const helper_empty_params = {
+    last_checked: Math.floor(Date.now() / 1000),
+    potential_helpers: {},
+    helpers: {}
+};

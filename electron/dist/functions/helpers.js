@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const logging_1 = require("./logging");
 const screenshot_1 = require("./screenshot");
 const python = require("./python_endpoints");
-const logging_helpers = new logging_1.default('helpers');
+const logging = new logging_1.default('helpers');
 async function click_img(template, webview_data, prop_threshold = 0.8) {
+    let logger = logging.get_logger('click_img', 'INFO');
     let { scale, webview_region, roi_region } = webview_data;
-    let logger = logging_helpers.get_logger('click_img', 'INFO');
     await screenshot_1.get_screenshot("screen.png");
     let { prob, coord } = await python.find_template(template, scale, webview_region, roi_region);
     logger.debug(template, prob, coord);

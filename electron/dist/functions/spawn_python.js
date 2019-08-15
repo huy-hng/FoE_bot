@@ -29,16 +29,16 @@ async function spawn_python(script, ...args) {
     scriptExecution.stdout.on("data", data => {
         let output = uint8arrayToString(data);
         let lines = output.split('\n');
-        let logging_level = 30;
+        let logging_level = 10;
         for (let line of lines) {
             if (line.substring(0, 7) === 'DEBUG: ' && logging_level <= 10)
-                console.log('Python: ', line);
+                logger.debug('Python: ', line);
             else if (line.substring(0, 6) === 'INFO: ' && logging_level <= 20)
-                console.log('Python: ', line);
+                logger.info('Python: ', line);
             else if (line.substring(0, 6) === 'WARN: ' && logging_level <= 30)
-                console.log('Python: ', line);
+                logger.warn('Python: ', line);
             else if (line.substring(0, 7) === 'ERROR: ' && logging_level <= 40)
-                console.log('Python: ', line);
+                logger.error('Python: ', line);
             else if (line.length == 0) { }
             else
                 python_return = line;

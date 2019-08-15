@@ -51,7 +51,7 @@ def get_scale(webview_region, template: str):
   if template_prob:
     scale = sorted(template_prob, key=lambda x: x[0], reverse=True)[0][1]
     return scale
-  return None
+  return 0
 
 
 def get_scale_and_check_logged_in(webview_region):

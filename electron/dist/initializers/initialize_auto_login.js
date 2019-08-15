@@ -10,16 +10,15 @@ class InitializeAutoLogin extends base_1.default {
         this.server = server;
     }
     async start() {
-        let logger = logging.get_logger('main', 'INFO', true);
-        logger.debug();
-        let webview_region = await this.get_webview_region();
-        let scale = await this.get_scale(webview_region, 'spielen_text');
-        logger.debug('scale', scale);
+        let logger = logging.get_logger('start', 'INFO', true);
+        let { scale, webview_region } = await super.start('spielen_text');
         let success = false;
         let message;
         if (scale) {
             let play = await helpers.click_img('spielen_text', { scale, webview_region });
             let server = await helpers.click_img(`servers/${this.server}`, { scale, webview_region });
+            logger.debug('play:', play);
+            logger.debug('server:', server);
             if (play && server) {
                 success = true;
             }

@@ -3,12 +3,12 @@ import { get_screenshot } from './screenshot';
 import { WebviewData } from '../interfaces';
 import * as python from './python_endpoints';
 
-const logging_helpers = new Logging('helpers');
+const logging = new Logging('helpers');
 
 export async function click_img(template: string, webview_data: WebviewData, prop_threshold=0.8) {
 
+  let logger = logging.get_logger('click_img', 'INFO')
   let { scale, webview_region, roi_region } = webview_data;
-  let logger = logging_helpers.get_logger('click_img', 'INFO')
 
   await get_screenshot("screen.png");
   let { prob, coord } = await python.find_template(template, scale, webview_region, roi_region)

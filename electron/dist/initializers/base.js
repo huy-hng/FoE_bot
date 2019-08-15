@@ -5,6 +5,14 @@ const logging_1 = require("../functions/logging");
 const python = require("../functions/python_endpoints");
 const logging = new logging_1.default('Base Initialize');
 class Initialize {
+    async start(template) {
+        let logger = logging.get_logger('start', 'INFO', true);
+        logger.debug();
+        let webview_region = await this.get_webview_region();
+        let scale = await this.get_scale(webview_region, template);
+        logger.debug('scale', scale);
+        return { scale, webview_region };
+    }
     async get_webview_region() {
         let logger = logging.get_logger('get_webview_region', 'INFO', true);
         logger.debug();
