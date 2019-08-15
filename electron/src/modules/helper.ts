@@ -9,13 +9,13 @@ import { WebviewData } from '../interfaces';
 const logging = new Logging('helper')
 
 export async function start() {
-  let logger = logging.get_logger('start', 'info', true)
+  const logger = logging.get_logger('start', 'info', true)
 
   const initialize = new Initializer();
   const webview_data = await initialize.start();
   logger.debug('webview_data', webview_data)
   
-  if (!webview_data.success) return
+  if (!webview_data.scale) return
 
   const checkboxes = ['friends help', 'friends tavern', 
                       'guild help', 'neighbors help']
@@ -62,7 +62,7 @@ function show_buttons(show: boolean) {
 }
 
 async function click_all_images(tab: string, template: string, webview_data: WebviewData) {
-  let logger = logging.get_logger('click_all_images', 'info', true)
+  const logger = logging.get_logger('click_all_images', 'info', true)
   logger.debug();
 
   

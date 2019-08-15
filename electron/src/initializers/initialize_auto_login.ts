@@ -1,29 +1,34 @@
 import Base_initializer from './base';
 import Logging from '../functions/logging';
 import * as helpers from '../functions/helpers';
-import { WebviewData } from '../interfaces';
 
 
 const logging = new Logging('InitializeAutoLogin');
 
+interface ReturnValue {
+  success: boolean;
+  scale: number;
+  webview_region: number[];
+  message: string;
+}
 
 export default class InitializeAutoLogin extends Base_initializer {
   constructor(private server: string) { super() }
   
-  async start(): Promise<WebviewData>  {
-    let logger = logging.get_logger('main', 'INFO', true) 
-    logger.debug()
+  async start(): Promise<ReturnValue> {
+    let logger = logging.get_logger('start', 'INFO', true) 
 
-    let webview_region = await this.get_webview_region();
-
-    let scale = await this.get_scale(webview_region, 'spielen_text')
-    logger.debug('scale', scale)
+    let { scale, webview_region } = await super.start('spielen_text')
+    
     let success = false;
     let message: string;
 
     if (scale) {
       let play = await helpers.click_img('spielen_text', {scale, webview_region})
       let server = await helpers.click_img(`servers/${this.server}`, {scale, webview_region})
+
+      logger.debug('play:', play);
+      logger.debug('server:', server);
 
       if (play && server) {
         success = true;

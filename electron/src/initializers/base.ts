@@ -5,7 +5,23 @@ import * as python from '../functions/python_endpoints';
 
 const logging = new Logging('Base Initialize');
 
+interface ReturnValue {
+  scale: number;
+  webview_region: number[];
+}
+
 export default class Initialize {
+
+  async start(template: string): Promise<ReturnValue> {
+    let logger = logging.get_logger('start', 'INFO', true)
+    logger.debug()
+
+    let webview_region = await this.get_webview_region();
+    let scale = await this.get_scale(webview_region, template)
+    logger.debug('scale', scale)
+
+    return { scale, webview_region }
+  }
   
   protected async get_webview_region() {
     let logger = logging.get_logger('get_webview_region', 'INFO', true)
