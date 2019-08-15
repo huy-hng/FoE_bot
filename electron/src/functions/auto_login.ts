@@ -45,4 +45,6 @@ async function wait_loading() {
   while (loading) {
     await helpers.sleep(10)
   }
+
+  await helpers.sleep(1000)
 }
