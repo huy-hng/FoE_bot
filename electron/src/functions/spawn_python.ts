@@ -10,13 +10,14 @@ let uint8arrayToString = data => {
 };
 
 export async function spawn_python(script: string, ...args) {
-  let logger = logging.get_logger('main', 'WARN', true)
+  let logging_level = 'DEBUG'
+  let logger = logging.get_logger('main', logging_level, false)
   
   logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
 
   let scriptExecution;
   if (process.env.NODE_ENV == 'p') {
-    scriptExecution = await spawn(path.join(__dirname, "/../../python/main.exe"), 
+    scriptExecution = await spawn(path.join(__dirname, "../../../python/main.exe"), 
       [script, JSON.stringify(args)]);
 
   } else {
@@ -38,12 +39,12 @@ export async function spawn_python(script: string, ...args) {
     let output = uint8arrayToString(data);
     let lines = output.split('\n')
 
-    let logging_level = 10
+    
     for (let line of lines) {
-      if (line.substring(0, 7) === 'DEBUG: ' && logging_level <= 10) logger.debug('Python: ', line)
-      else if (line.substring(0, 6) === 'INFO: ' && logging_level <= 20) logger.info('Python: ', line)
-      else if (line.substring(0, 6) === 'WARN: ' && logging_level <= 30) logger.warn('Python: ', line)
-      else if (line.substring(0, 7) === 'ERROR: ' && logging_level <= 40) logger.error('Python: ', line)
+      if (line.substring(0, 7) === 'DEBUG: ' && logging_level == 'DEBUG') logger.debug('Python: ', line)
+      else if (line.substring(0, 6) === 'INFO: ' && logging_level == 'INFO') logger.info('Python: ', line)
+      else if (line.substring(0, 6) === 'WARN: ' && logging_level == 'WARN') logger.warn('Python: ', line)
+      else if (line.substring(0, 7) === 'ERROR: ' && logging_level == 'ERROR') logger.error('Python: ', line)
       else if (line.length == 0) {}
       else python_return = line
     }

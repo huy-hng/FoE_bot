@@ -6,6 +6,11 @@ async function find_template(template, scale, webview_region, roi_region) {
     return { prob, coord };
 }
 exports.find_template = find_template;
+async function find_all_template_locations(template, scale, webview_region, roi_region) {
+    let { points } = await spawn_python_1.spawn_python("find_all_template_locations", template, scale, webview_region, roi_region);
+    return { points };
+}
+exports.find_all_template_locations = find_all_template_locations;
 async function check_last_page(webview_data) {
     let { webview_region, roi_region } = webview_data;
     let prob = await spawn_python_1.spawn_python("check_last_page", webview_region, roi_region);
@@ -33,4 +38,11 @@ async function get_roi_region(scale, webview_region) {
     return roi_region;
 }
 exports.get_roi_region = get_roi_region;
+//#endregion
+//#region watcher
+async function get_names(scale, webview_region) {
+    let data = await spawn_python_1.spawn_python("get_names", scale, webview_region);
+    return data;
+}
+exports.get_names = get_names;
 //#endregion

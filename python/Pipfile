@@ -6,9 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-numpy = "*"
 opencv-python = "*"
 pyinstaller = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.7"

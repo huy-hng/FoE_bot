@@ -15,7 +15,7 @@ interface ReturnValue {
 export default class InitializeAutoLogin extends Base_initializer {
   constructor(private server: string) { super() }
   
-  async start(): Promise<ReturnValue> {
+  async start() {
     let logger = logging.get_logger('start', 'INFO', true) 
 
     let { scale, webview_region } = await super.start('spielen_text')

@@ -9,7 +9,7 @@ import { WebviewData } from '../interfaces';
 const logging = new Logging('helper')
 
 export async function start() {
-  const logger = logging.get_logger('start', 'info', true)
+  const logger = logging.get_logger('start', 'INFO', true)
 
   const initialize = new Initializer();
   const webview_data = await initialize.start();
@@ -35,13 +35,14 @@ export async function start() {
       await should_pause();
       if (stop) {
         toggle_stop()
-        console.log('Stopped')
+        logger.info('Stopped');
+
         break
       }
     }
   }
-  
-  console.log('Finished everything')
+  logger.info('Finished everything');
+
   show_buttons(false)
 }
 
@@ -62,7 +63,7 @@ function show_buttons(show: boolean) {
 }
 
 async function click_all_images(tab: string, template: string, webview_data: WebviewData) {
-  const logger = logging.get_logger('click_all_images', 'info', true)
+  const logger = logging.get_logger('click_all_images', 'INFO', true)
   logger.debug();
 
   
@@ -86,11 +87,12 @@ async function click_all_images(tab: string, template: string, webview_data: Web
       return
     }
   }
-  console.log(`Finished ${tab} ${template
-  }`);
+  logger.info(`Finished ${tab} ${template}`);
 }
 
 async function click_images_in_page(template: string, webview_data: WebviewData) {
+
+  const logger = logging.get_logger('click_images_in_page', 'INFO', true)
 
   let help_prob = true;
   let loop_count = 0;
@@ -105,7 +107,7 @@ async function click_images_in_page(template: string, webview_data: WebviewData)
 
     loop_count++;
   }
-  console.log('Page finished.');
+  console.log('Page finished.')
   return loop_count;
 }
 

@@ -1,6 +1,7 @@
 import Data from "./functions/process_data";
 import Logging from './functions/logging';
 import * as helper from './modules/helper';
+import * as watcher from './modules/watcher';
 
 const logging = new Logging('event_listener')
 const app_data = new Data('app')
@@ -10,6 +11,7 @@ export function start() {
   document.getElementById("start_button").addEventListener("click", helper.start);
   document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
   document.getElementById("stop_button").addEventListener("click", helper.toggle_stop);
+  document.getElementById("get_names").addEventListener("click", watcher.main);
 
 
   //#region todo checkboxes

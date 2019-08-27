@@ -8,15 +8,6 @@ class Data {
         this.file_name = file_name;
         this.file_location = `./data/${file_name}.json`;
     }
-    async set_new_data(new_data) {
-        const logger = logging.get_logger('set_data', 'INFO', true);
-        let data = await this.get_data();
-        for (let key in new_data) {
-            data[key] = new_data[key];
-        }
-        await this.set_data(data);
-        logger.debug('Successfully saved new data');
-    }
     get data() {
         return this.get_data();
     }
@@ -38,9 +29,9 @@ class Data {
     create_file() {
         let default_settings;
         if (this.file_name == 'app')
-            default_settings = JSON.stringify(app_settings);
+            default_settings = app_settings;
         if (this.file_name == 'helper')
-            default_settings = JSON.stringify(helper_empty_params);
+            default_settings = helper_empty_params;
         this.set_data(default_settings);
         return default_settings;
     }
@@ -51,6 +42,15 @@ class Data {
                 throw err;
             logger.debug('File successfully saved');
         });
+    }
+    async set_new_data(new_data) {
+        const logger = logging.get_logger('set_data', 'INFO', true);
+        let data = await this.get_data();
+        for (let key in new_data) {
+            data[key] = new_data[key];
+        }
+        await this.set_data(data);
+        logger.debug('Successfully saved new data');
     }
 }
 exports.default = Data;

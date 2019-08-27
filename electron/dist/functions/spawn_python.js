@@ -9,11 +9,12 @@ let uint8arrayToString = data => {
     return String.fromCharCode.apply(null, data);
 };
 async function spawn_python(script, ...args) {
-    let logger = logging.get_logger('main', 'WARN', true);
+    let logging_level = 'DEBUG';
+    let logger = logging.get_logger('main', logging_level, false);
     logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
     let scriptExecution;
     if (process.env.NODE_ENV == 'p') {
-        scriptExecution = await child_process_1.spawn(path.join(__dirname, "/../../python/main.exe"), [script, JSON.stringify(args)]);
+        scriptExecution = await child_process_1.spawn(path.join(__dirname, "../../../python/main.exe"), [script, JSON.stringify(args)]);
     }
     else {
         logger.info('Running in development mode');
@@ -29,15 +30,14 @@ async function spawn_python(script, ...args) {
     scriptExecution.stdout.on("data", data => {
         let output = uint8arrayToString(data);
         let lines = output.split('\n');
-        let logging_level = 10;
         for (let line of lines) {
-            if (line.substring(0, 7) === 'DEBUG: ' && logging_level <= 10)
+            if (line.substring(0, 7) === 'DEBUG: ' && logging_level == 'DEBUG')
                 logger.debug('Python: ', line);
-            else if (line.substring(0, 6) === 'INFO: ' && logging_level <= 20)
+            else if (line.substring(0, 6) === 'INFO: ' && logging_level == 'INFO')
                 logger.info('Python: ', line);
-            else if (line.substring(0, 6) === 'WARN: ' && logging_level <= 30)
+            else if (line.substring(0, 6) === 'WARN: ' && logging_level == 'WARN')
                 logger.warn('Python: ', line);
-            else if (line.substring(0, 7) === 'ERROR: ' && logging_level <= 40)
+            else if (line.substring(0, 7) === 'ERROR: ' && logging_level == 'ERROR')
                 logger.error('Python: ', line);
             else if (line.length == 0) { }
             else

@@ -2,15 +2,17 @@ import * as url from 'url'
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
-require("electron-reload")(__dirname, {
-  electron: require(`${__dirname}/../node_modules/electron`),
-  ignored: /.png|.log/,
-  // ignored: /screen.png|index.html/,
-  argv: [],
-  // hardResetMethod: 'exit',
-});
-
 process.env.NODE_ENV = 'd'
+
+if (process.env.NODE_ENV == 'd') {
+  require("electron-reload")(__dirname, {
+    electron: require(`${__dirname}/../node_modules/electron`),
+    ignored: /.png|.log/,
+    // ignored: /screen.png|index.html/,
+    argv: [],
+  });
+}
+
 
 function createWindow() {
   let win = new BrowserWindow({
@@ -32,7 +34,7 @@ function createWindow() {
     })
   );
 
-  /* if (process.env.NODE_ENV == 'd') */ win.webContents.openDevTools();
+  if (process.env.NODE_ENV == 'd') win.webContents.openDevTools();
 
   win.on("closed", () => {
     win = null;

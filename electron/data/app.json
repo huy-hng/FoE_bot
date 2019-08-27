@@ -1,7 +1,7 @@
 {
-  "auto_login": true,
-  "auto_login_server": "Odhrorvar",
-  "friends help": false,
+  "auto_login": false,
+  "auto_login_server": "",
+  "friends help": true,
   "friends tavern": true,
   "guild help": true,
   "neighbors help": false

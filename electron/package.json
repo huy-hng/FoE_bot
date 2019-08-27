@@ -5,7 +5,6 @@
   "main": "./dist/index.js",
   "scripts": {
     "start": "electron . --disable-d3d11",
-
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
     "package-win": "electron-packager . \"Forge of Empires Bot\" --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/Favicon.ico --prune=true --out=release-builds --version-string.CompanyName=Slay --version-string.FileDescription=Slay",
     "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
@@ -14,8 +13,7 @@
     "electron": "^5.0.2",
     "electron-packager": "^14.0.1",
     "electron-reload": "^1.4.0",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

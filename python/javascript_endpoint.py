@@ -8,8 +8,8 @@ import logger
 def find_template_base(str_template, scale, webview_region, roi_region=None):
   webview = helpers.read_img(region=webview_region)
   webview_shape = webview.shape
-  if roi_region is not None:
-      webview = helpers.crop_image(webview, roi_region)
+  # if roi_region is not None:
+  #     webview = helpers.crop_image(webview, roi_region)
 
   template = cv2.imread(f'templates/{str_template}.png')
 
@@ -39,10 +39,9 @@ def find_template(str_template, scale, webview_region, roi_region=None):
   x = loc[0] + template_width / 2
   y = loc[1] + template_height / 2
 
-  if roi_region is not None:
-    x += roi_region[0]
-    y += roi_region[2]
-
+  # if roi_region is not None:
+  #   x += roi_region[0]
+  #   y += roi_region[2]
 
   float_point = [x / webview_width, y / webview_height]
   logger.debug(x, y)
@@ -69,9 +68,9 @@ def find_all_template_locations(str_template, scale, webview_region, roi_region=
     x = pt[0] + template_width / 2
     y = pt[1] + template_height / 2
     
-    if roi_region is not None:
-      x += roi_region[0]
-      y += roi_region[2]
+    # if roi_region is not None:
+    #   x += roi_region[0]
+    #   y += roi_region[2]
 
     points.append([x / webview_width, y / webview_height])
 

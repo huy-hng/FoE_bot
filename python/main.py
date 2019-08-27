@@ -5,6 +5,7 @@ import logger
 from helping import *
 from initializer import *
 from javascript_endpoint import *
+from watcher import *
 
 
 script = sys.argv[1]

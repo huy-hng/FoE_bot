@@ -3,13 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const url = require("url");
 const electron_1 = require("electron");
 const path = require("path");
-require("electron-reload")(__dirname, {
-    electron: require(`${__dirname}/../node_modules/electron`),
-    ignored: /.png|.log/,
-    // ignored: /screen.png|index.html/,
-    argv: [],
-});
 process.env.NODE_ENV = 'd';
+if (process.env.NODE_ENV == 'd') {
+    require("electron-reload")(__dirname, {
+        electron: require(`${__dirname}/../node_modules/electron`),
+        ignored: /.png|.log/,
+        // ignored: /screen.png|index.html/,
+        argv: [],
+    });
+}
 function createWindow() {
     let win = new electron_1.BrowserWindow({
         minWidth: 1200,
@@ -25,7 +27,8 @@ function createWindow() {
         protocol: "file:",
         slashes: true
     }));
-    /* if (process.env.NODE_ENV == 'd') */ win.webContents.openDevTools();
+    if (process.env.NODE_ENV == 'd')
+        win.webContents.openDevTools();
     win.on("closed", () => {
         win = null;
     });

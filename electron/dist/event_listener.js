@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const process_data_1 = require("./functions/process_data");
 const logging_1 = require("./functions/logging");
 const helper = require("./modules/helper");
+const watcher = require("./modules/watcher");
 const logging = new logging_1.default('event_listener');
 const app_data = new process_data_1.default('app');
 function start() {
@@ -10,6 +11,7 @@ function start() {
     document.getElementById("start_button").addEventListener("click", helper.start);
     document.getElementById("pause_button").addEventListener("click", helper.toggle_pause);
     document.getElementById("stop_button").addEventListener("click", helper.toggle_stop);
+    document.getElementById("get_names").addEventListener("click", watcher.main);
     //#region todo checkboxes
     const friends_help = document.getElementById('friends help');
     const friends_tavern = document.getElementById('friends tavern');

@@ -12,7 +12,7 @@ interface ReturnValue {
 
 export default class Initialize {
 
-  async start(template: string): Promise<ReturnValue> {
+  async start(template: string) {
     let logger = logging.get_logger('start', 'INFO', true)
     logger.debug()
 

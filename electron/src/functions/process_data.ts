@@ -11,17 +11,6 @@ export default class Data {
 
   }
 
-  async set_new_data(new_data: any) {
-    const logger = logging.get_logger('set_data', 'INFO', true)
-
-    let data  = await this.get_data();
-    for (let key in new_data) {
-      data[key] = new_data[key]
-    }
-    await this.set_data(data)
-    logger.debug('Successfully saved new data');
-  }
-
   get data() {
     return this.get_data()
   }
@@ -45,20 +34,31 @@ export default class Data {
   }
 
   create_file() {
-    let default_settings: string
-    if (this.file_name == 'app') default_settings = JSON.stringify(app_settings)
-    if (this.file_name == 'helper') default_settings = JSON.stringify(helper_empty_params)
+    let default_settings: any;
+    if (this.file_name == 'app') default_settings = app_settings;
+    if (this.file_name == 'helper') default_settings = helper_empty_params;
 
-    this.set_data(default_settings)
-    return default_settings
+    this.set_data(default_settings);
+    return default_settings;
   }
   
   async set_data(data: any) {
-    const logger = logging.get_logger('write_data', 'INFO', true)
+    const logger = logging.get_logger('write_data', 'INFO', true);
     fs.writeFile(this.file_location, JSON.stringify(data, null, 2), err => {
       if (err) throw err;
       logger.debug('File successfully saved');
     });
+  }
+
+  async set_new_data(new_data: any) {
+    const logger = logging.get_logger('set_data', 'INFO', true)
+
+    let data = await this.get_data();
+    for (let key in new_data) {
+      data[key] = new_data[key]
+    }
+    await this.set_data(data)
+    logger.debug('Successfully saved new data');
   }
 
 }
