@@ -27,16 +27,16 @@ class Data {
         return JSON.parse(data);
     }
     create_file() {
-        let default_settings;
+        let json_obj;
         if (this.file_name == 'app')
-            default_settings = app_settings;
+            json_obj = default_app_settings;
         if (this.file_name == 'helper')
-            default_settings = helper_empty_params;
-        this.set_data(default_settings);
-        return default_settings;
+            json_obj = helper_empty_params;
+        this.set_data(json_obj);
+        return JSON.stringify(json_obj);
     }
     async set_data(data) {
-        const logger = logging.get_logger('write_data', 'INFO', true);
+        const logger = logging.get_logger('set_data', 'INFO', true);
         fs.writeFile(this.file_location, JSON.stringify(data, null, 2), err => {
             if (err)
                 throw err;
@@ -54,7 +54,7 @@ class Data {
     }
 }
 exports.default = Data;
-const app_settings = {
+const default_app_settings = {
     "auto_login": false,
     "auto_login_server": "",
     "friends help": true,

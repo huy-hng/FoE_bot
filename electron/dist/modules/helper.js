@@ -1,13 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
 const initialize_helper_1 = require("../initializers/initialize_helper");
 const screenshot_1 = require("../functions/screenshot");
 const logging_1 = require("../functions/logging");
 const python = require("../functions/python_endpoints");
 const helpers = require("../functions/helpers");
 const logging = new logging_1.default('helper');
+let prob_threshold;
 async function start() {
     const logger = logging.get_logger('start', 'INFO', true);
+    let width = electron_1.remote
+        .getCurrentWindow()
+        //@ts-ignore
+        .webContents.getOwnerBrowserWindow()
+        .getBounds().width;
+    prob_threshold = 0.8;
+    if (width < 1900) {
+        // prob_threshold = 0.7
+    }
+    logger.info('prob_threshold:', prob_threshold);
+    logger.info('width:', width);
     const initialize = new initialize_helper_1.default();
     const webview_data = await initialize.start();
     logger.debug('webview_data', webview_data);
@@ -78,7 +91,7 @@ async function click_images_in_page(template, webview_data) {
     let help_prob = true;
     let loop_count = 0;
     while (help_prob) {
-        help_prob = await helpers.click_img(template, webview_data);
+        help_prob = await helpers.click_img(template, webview_data, prob_threshold);
         await should_pause();
         if (stop) {
             return;

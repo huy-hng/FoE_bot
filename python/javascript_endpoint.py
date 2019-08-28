@@ -44,7 +44,6 @@ def find_template(str_template, scale, webview_region, roi_region=None):
   #   y += roi_region[2]
 
   float_point = [x / webview_width, y / webview_height]
-  logger.debug(x, y)
 
   data = {
       'prob': prob,

@@ -14,7 +14,7 @@ interface ReturnValue {
 }
 
 export default class InitializeHelper extends Base_initializer {
-  async start(): Promise<ReturnValue> {
+  async start() {
     const logger = logging.get_logger('start', 'INFO', true)
 
     let { scale, webview_region } = await super.start('in_game')

@@ -22,7 +22,7 @@ export default class Data {
   async get_data() {
     const logger = logging.get_logger('read_data', 'INFO', true)
 
-    let data: string
+    let data: string;
     if (fs.existsSync(this.file_location)) {
       data = fs.readFileSync(this.file_location, 'utf8')
     } else {
@@ -34,16 +34,16 @@ export default class Data {
   }
 
   create_file() {
-    let default_settings: any;
-    if (this.file_name == 'app') default_settings = app_settings;
-    if (this.file_name == 'helper') default_settings = helper_empty_params;
+    let json_obj: any;
+    if (this.file_name == 'app') json_obj = default_app_settings;
+    if (this.file_name == 'helper') json_obj = helper_empty_params;
 
-    this.set_data(default_settings);
-    return default_settings;
+    this.set_data(json_obj);
+    return JSON.stringify(json_obj);
   }
   
   async set_data(data: any) {
-    const logger = logging.get_logger('write_data', 'INFO', true);
+    const logger = logging.get_logger('set_data', 'INFO', true);
     fs.writeFile(this.file_location, JSON.stringify(data, null, 2), err => {
       if (err) throw err;
       logger.debug('File successfully saved');
@@ -64,7 +64,7 @@ export default class Data {
 }
 
 
-const app_settings = {
+const default_app_settings = {
   "auto_login": false,
   "auto_login_server": "",
 

@@ -9,7 +9,7 @@ let uint8arrayToString = data => {
     return String.fromCharCode.apply(null, data);
 };
 async function spawn_python(script, ...args) {
-    let logging_level = 'DEBUG';
+    let logging_level = 'INFO';
     let logger = logging.get_logger('main', logging_level, false);
     logger.info(`Spawning Python instance: ${script}, with args: ${JSON.stringify(args)}`);
     let scriptExecution;
@@ -19,7 +19,6 @@ async function spawn_python(script, ...args) {
     else {
         logger.info('Running in development mode');
         scriptExecution = await child_process_1.spawn("C:\\Users\\Huy\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
-            // scriptExecution = await spawn("C:\\Users\\huy-h\\.virtualenvs\\FoE_bot-UE06RW1m\\Scripts\\python.exe", [
             path.join(__dirname, `../../../python/main.py`),
             script,
             JSON.stringify(args)

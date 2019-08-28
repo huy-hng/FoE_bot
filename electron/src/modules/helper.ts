@@ -1,3 +1,5 @@
+import { remote } from "electron";
+
 import Initializer from '../initializers/initialize_helper'
 import { get_screenshot } from "../functions/screenshot"
 import Logging from "../functions/logging"
@@ -8,8 +10,25 @@ import { WebviewData } from '../interfaces';
 
 const logging = new Logging('helper')
 
+let prob_threshold: number;
+
 export async function start() {
   const logger = logging.get_logger('start', 'INFO', true)
+
+  let width = remote
+    .getCurrentWindow()
+    //@ts-ignore
+    .webContents.getOwnerBrowserWindow()
+    .getBounds().width
+
+  prob_threshold = 0.8
+  if (width < 1900) {
+    // prob_threshold = 0.7
+  }
+
+  logger.info('prob_threshold:', prob_threshold);
+  logger.info('width:', width);
+
 
   const initialize = new Initializer();
   const webview_data = await initialize.start();
@@ -98,7 +117,7 @@ async function click_images_in_page(template: string, webview_data: WebviewData)
   let loop_count = 0;
   while (help_prob) {
 
-    help_prob = await helpers.click_img(template, webview_data);
+    help_prob = await helpers.click_img(template, webview_data, prob_threshold);
 
     await should_pause();
     if (stop) {
